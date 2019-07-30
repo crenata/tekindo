@@ -33,6 +33,33 @@
                 </li>
             </ul>
         </li>
+
+        <li class="site-menu-item has-sub {{ Request::is('admin/inbound/yearly', 'admin/inbound/monthly', 'admin/inbound/daily') ? 'active' : '' }}">
+            <a href="javascript:void(0)">
+                <i class="site-menu-icon md-view-compact" aria-hidden="true"></i>
+                <span class="site-menu-title">Inbound</span>
+                <span class="site-menu-arrow"></span>
+            </a>
+            <ul class="site-menu-sub">
+                <li class="site-menu-item {{ Request::is('admin/inbound/daily') ? 'active' : '' }}">
+                    <a class="animsition-link" href="{{ route('daily-inbound.index') }}">
+                        <span class="site-menu-title">Daily</span>
+                    </a>
+                </li>
+
+                <li class="site-menu-item {{ Request::is('admin/inbound/monthly') ? 'active' : '' }}">
+                    <a class="animsition-link" href="{{ route('monthly-inbound.index') }}">
+                        <span class="site-menu-title">Monthly</span>
+                    </a>
+                </li>
+
+                <li class="site-menu-item {{ Request::is('admin/inbound/yearly') ? 'active' : '' }}">
+                    <a class="animsition-link" href="{{ route('yearly-inbound.index') }}">
+                        <span class="site-menu-title">Yearly</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
     </ul>
 </div>
 

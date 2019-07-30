@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Inbound;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,15 +11,17 @@ use App\Models\Admin\YearlyAchievement;
 use App\Models\Admin\MonthlyAchievement;
 use App\Models\Admin\DailyAchievement;
 
+use App\Models\Admin\DailyInbound;
+use App\Models\Admin\MonthlyInbound;
+use App\Models\Admin\YearlyInbound;
+
 use Session;
 use Validator;
 
-class DailyAchievementController extends Controller
+class DailyInboundController extends Controller
 {
     protected $rules = [
-        'yearly_achievement_id' => 'required|numeric',
-        'monthly_achievement_id' => 'required|numeric',
-        'name' => 'required'
+        'daily_achievement_id' => 'required|numeric'
     ];
 
     /**
@@ -31,8 +33,8 @@ class DailyAchievementController extends Controller
     {
         $yearlys = YearlyAchievement::all();
         $monthlys = MonthlyAchievement::all();
-        $dailys = DailyAchievement::all();
-        return view('admin.pages.achievement.daily.index')->withYearlys($yearlys)->withMonthlys($monthlys)->withDailys($dailys);
+        $dailys = DailyInbound::all();
+        return view('admin.pages.inbound.daily.index')->withYearlys($yearlys)->withMonthlys($monthlys)->withDailys($dailys);
     }
 
     /**
@@ -58,17 +60,18 @@ class DailyAchievementController extends Controller
         if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         } else {
-            $daily = new DailyAchievement;
+            $daily_achievement = DailyAchievement::where('id', $request->daily_achievement_id)->firstOrFail();
 
-            $daily->yearly_achievement_id = $request->yearly_achievement_id;
-            $daily->monthly_achievement_id = $request->monthly_achievement_id;
-            $daily->name = $request->name;
-            $daily->slug = str_slug($request->name, '-');
-            $daily->target = $request->target;
+            $daily = new DailyInbound;
+
+            $daily->daily_achievement_id = $request->daily_achievement_id;
+            $daily->total = $request->total;
+            $daily->status = (($request->total >= $daily_achievement->target) ? 'Tercapai' : 'Belum Tercapai');
+            $daily->note = $request->note;
 
             $daily->save();
 
-            return response()->json($daily->load('yearly_achievement')->load('monthly_achievement'));
+            return response()->json($daily->load('daily_achievement'));
         }
     }
 
@@ -108,17 +111,18 @@ class DailyAchievementController extends Controller
         if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         } else {
-            $daily = DailyAchievement::findOrFail($id);
+            $daily_achievement = DailyAchievement::where('id', $request->daily_achievement_id)->firstOrFail();
 
-            $daily->yearly_achievement_id = $request->yearly_achievement_id;
-            $daily->monthly_achievement_id = $request->monthly_achievement_id;
-            $daily->name = $request->name;
-            $daily->slug = str_slug($request->name, '-');
-            $daily->target = $request->target;
+            $daily = DailyInbound::findOrFail($id);
+
+            $daily->daily_achievement_id = $request->daily_achievement_id;
+            $daily->total = $request->total;
+            $daily->status = (($request->total >= $daily_achievement->target) ? 'Tercapai' : 'Belum Tercapai');
+            $daily->note = $request->note;
 
             $daily->save();
 
-            return response()->json($daily->load('yearly_achievement')->load('monthly_achievement'));
+            return response()->json($daily->load('daily_achievement'));
         }
     }
 
@@ -130,25 +134,8 @@ class DailyAchievementController extends Controller
      */
     public function destroy($id)
     {
-        $daily = DailyAchievement::findOrFail($id);
+        $daily = DailyInbound::findOrFail($id);
         $daily->delete();
         return response()->json($daily);
-    }
-
-    public function monthlyByYearly($id) {
-        $monthly = MonthlyAchievement::where('yearly_achievement_id', $id)->get();
-        return response()->json($monthly->load('yearly_achievement'));
-    }
-
-    public function dailyByMonthly($id) {
-        $daily = DailyAchievement::where('monthly_achievement_id', $id)->get();
-        return response()->json($daily->load('yearly_achievement')->load('monthly_achievement'));
-    }
-
-    public function dailySaveGenerateTarget(Request $request) {
-        $monthly = MonthlyAchievement::where('id', $request->monthly_id)->firstOrFail();
-        DailyAchievement::where('monthly_achievement_id', $monthly->id)->update(['target' => $request->target]);
-        $daily = DailyAchievement::where('monthly_achievement_id', $monthly->id)->get();
-        return response()->json($daily->load('yearly_achievement')->load('monthly_achievement'));
     }
 }

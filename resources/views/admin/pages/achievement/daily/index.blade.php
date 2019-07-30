@@ -534,7 +534,7 @@
                                 "<td>" + data.name + "</td>" +
                                 "<td>" + data.yearly_achievement.name + "</td>" +
                                 "<td>" + convert_month(data.monthly_achievement.name) + "</td>" +
-                                "<td>" + "0 (default)" + "</td>" +
+                                "<td>" + ((value.target) ? format_money(parseFloat(value.target)) : '0') + " Ton" + "</td>" +
                                 /*"<td class='actions'>" +
                                     "<a href='javascript:void(0)' data-id='" + data.id + "' data-name='" + data.name + "' data-yearly='" + data.yearly_achievement.name + "' data-monthly='" + data.monthly_achievement.name + "' data-target='" + data.target + "' class='btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-daily' data-toggle='tooltip' data-original-title='Show'>" +
                                         "<i class='icon md-wrench' aria-hidden='true'></i> Show" +
@@ -556,7 +556,7 @@
         }
 
         function edit_submit() {
-            var edit_form_data = new FormData();
+            let edit_form_data = new FormData();
 
             let id = $('#id-edit').val();
             let name = $('#edit-name').val();
@@ -723,9 +723,9 @@
                                             $('#datatable').append(
                                                 "<tr id='daily-id-" + value.id + "'>" +
                                                     "<td>" + value.name + "</td>" +
-                                                    "<td>" + get_month_value(value.yearly_achievement.start, value.yearly_achievement.end, value.monthly_achievement.name) + "</td>" +
+                                                    "<td>" + /*get_year_value(value.yearly_achievement.start, value.yearly_achievement.end, value.monthly_achievement.name)*/ value.monthly_achievement.year_name + "</td>" +
                                                     "<td>" + convert_month(value.monthly_achievement.name) + "</td>" +
-                                                    "<td>" + "0 (default)" + "</td>" +
+                                                    "<td>" + ((value.target) ? format_money(parseFloat(value.target)) : '0') + " Ton" + "</td>" +
                                                     /*"<td class='actions'>" +
                                                         "<a href='javascript:void(0)' data-id='" + value.id + "' data-name='" + value.name + "' data-yearly='" + value.yearly_achievement.name + "' data-monthly='" + value.monthly_achievement.name + "' data-target='" + value.target + "' class='btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-daily' data-toggle='tooltip' data-original-title='Show'>" +
                                                             "<i class='icon md-wrench' aria-hidden='true'></i> Show" +
@@ -847,12 +847,13 @@
 
                                                                         } else {
                                                                             console.log(data);
+                                                                            toastr.success('Successfully Generate Target!', 'Success Alert', {timeOut: 5000});
                                                                             $.each(data, function(index, value) {
                                                                                 console.log(value);
                                                                                 $('#daily-id-' + value.id).replaceWith(
                                                                                     "<tr id='daily-id-" + value.id + "'>" +
                                                                                         "<td>" + value.name + "</td>" +
-                                                                                        "<td>" + value.yearly_achievement.name + "</td>" +
+                                                                                        "<td>" + value.monthly_achievement.year_name + "</td>" +
                                                                                         "<td>" + convert_month(value.monthly_achievement.name) + "</td>" +
                                                                                         "<td>" + ((value.target) ? format_money(parseFloat(value.target)) : '0') + " Ton" + "</td>" +
                                                                                         /*"<td class='actions'>" +
@@ -928,7 +929,7 @@
             });
         });
 
-        function get_month_value(start, end, current_month) {
+        function get_year_value(start, end, current_month) {
             let date_start = new Date(start);
             let date_end = new Date(end);
 

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDailyAchievementsTable extends Migration
+class CreateYearlyInboundsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,20 +13,20 @@ class CreateDailyAchievementsTable extends Migration
      */
     public function up()
     {
-        Schema::create('daily_achievements', function (Blueprint $table) {
+        Schema::create('yearly_inbounds', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('yearly_achievement_id')->unsigned();
-            $table->bigInteger('monthly_achievement_id')->unsigned();
-            $table->date('name');
-            $table->string('slug');
-            $table->bigInteger('target')->nullable()->default(0);
+            $table->bigInteger('monthly_inbound_id')->unsigned();
+            $table->string('name');
+            $table->bigInteger('total');
+            $table->enum('status', ['Tercapai', 'Tidak Tercapai']);
             $table->timestamps();
             $table->softDeletes();
         });
 
-        Schema::table('daily_achievements', function ($table) {
+        Schema::table('yearly_inbounds', function ($table) {
             $table->foreign('yearly_achievement_id')->references('id')->on('yearly_achievements')->onDelete('cascade');
-            $table->foreign('monthly_achievement_id')->references('id')->on('monthly_achievements')->onDelete('cascade');
+            $table->foreign('monthly_inbound_id')->references('id')->on('monthly_inbounds')->onDelete('cascade');
         });
     }
 
@@ -37,6 +37,6 @@ class CreateDailyAchievementsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('daily_achievements');
+        Schema::dropIfExists('yearly_inbounds');
     }
 }

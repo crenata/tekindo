@@ -519,7 +519,6 @@
         }
 
         function get_date(date) {
-            console.log(date);
             date = new Date(date);
             const month = ['January', 'February', 'March', 'April', 'Mei', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             const day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

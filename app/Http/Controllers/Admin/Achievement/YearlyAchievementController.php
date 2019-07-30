@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Achievement;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -78,6 +78,7 @@ class YearlyAchievementController extends Controller
                     for ($i = date('m', strtotime($this->request->start)); $i <= 12; $i++) {
                         $monthly_id = DB::table('monthly_achievements')->insertGetId([
                             'yearly_achievement_id' => $yearly_id,
+                            'year_name' => date('Y', strtotime($this->request->start)),
                             'name' => $i,
                             'slug' => str_slug($i, '-'),
                             'created_at' => $now,
@@ -90,7 +91,7 @@ class YearlyAchievementController extends Controller
                             DB::table('daily_achievements')->insert([
                                 'yearly_achievement_id' => $yearly_id,
                                 'monthly_achievement_id' => $monthly_id,
-                                'name' => $j,
+                                'name' => date('Y-m-d', strtotime(date('Y', strtotime($this->request->start)) . '-' . str_pad($i, 2, 0, STR_PAD_LEFT) . '-' . str_pad($j, 2, 0, STR_PAD_LEFT))),
                                 'slug' => str_slug($j, '-'),
                                 'created_at' => $now,
                                 'updated_at' => $now
@@ -101,6 +102,7 @@ class YearlyAchievementController extends Controller
                     for ($k = 1; $k < date('m', strtotime($this->request->start)); $k++) {
                         $monthly_id_end = DB::table('monthly_achievements')->insertGetId([
                             'yearly_achievement_id' => $yearly_id,
+                            'year_name' => date('Y', strtotime($this->request->end)),
                             'name' => $k,
                             'slug' => str_slug($k, '-'),
                             'created_at' => $now,
@@ -113,7 +115,7 @@ class YearlyAchievementController extends Controller
                             DB::table('daily_achievements')->insert([
                                 'yearly_achievement_id' => $yearly_id,
                                 'monthly_achievement_id' => $monthly_id_end,
-                                'name' => $l,
+                                'name' => date('Y-m-d', strtotime(date('Y', strtotime($this->request->end)) . '-' . str_pad($k, 2, 0, STR_PAD_LEFT) . '-' . str_pad($l, 2, 0, STR_PAD_LEFT))),
                                 'slug' => str_slug($l, '-'),
                                 'created_at' => $now,
                                 'updated_at' => $now

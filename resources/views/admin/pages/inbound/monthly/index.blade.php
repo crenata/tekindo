@@ -602,6 +602,7 @@
                     if (data.errors) {
                         
                     } else {
+                        // toastr.success('Successfully loaded Brand!', 'Success Alert', {timeOut: 5000});
                         $('#monthly-generate').replaceWith(
                             "<div id='monthly-generate'>" +
                                 "<div class='row'>"
@@ -657,7 +658,6 @@
                                                             
                                                         } else {
                                                             console.log(data);
-                                                            toastr.success('Successfully Generate Target!', 'Success Alert', {timeOut: 5000});
                                                             $.each(data, function(index, value) {
                                                                 console.log(value);
                                                                 $('#monthly-id-' + value.id).replaceWith(

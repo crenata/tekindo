@@ -16,6 +16,7 @@ class CreateMonthlyAchievementsTable extends Migration
         Schema::create('monthly_achievements', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('yearly_achievement_id')->unsigned();
+            $table->bigInteger('year_name');
             $table->enum('name', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
             $table->string('slug');
             $table->bigInteger('target')->nullable()->default(0);
