@@ -337,7 +337,7 @@
                             <table class="ui table table-bordered table-striped table-hover" id="datatable">
                                 <thead>
                                     <tr>
-                                        <th>Tanggal</th>
+                                        <th>Date</th>
                                         <th>Year</th>
                                         <th>Month</th>
                                         <th>Target</th>
@@ -373,7 +373,7 @@
                             <table class="ui table table-bordered table-striped table-hover" id="datatable">
                                 <thead>
                                     <tr>
-                                        <th>Tanggal</th>
+                                        <th>Date</th>
                                         <th>Year</th>
                                         <th>Month</th>
                                         <th>Target</th>
@@ -409,6 +409,9 @@
                 "<select name='monthly_achievement_id' id='add-monthly' class='form-control' required=''>" +
                     "<option value=''>Select Year First</option>" +
                 "</select>");
+            $('.error-add-name').addClass('d-none');
+            $('.error-add-yearly').addClass('d-none');
+            $('.error-add-monthly').addClass('d-none');
             $('#add-modal').modal('show');
         });
 
@@ -450,6 +453,9 @@
             $('#edit-name').val($(this).data('name'));
             $('#edit-yearly').val($(this).data('yearly'));
             $('#edit-monthly').val($(this).data('monthly'));
+            $('.error-edit-name').addClass('d-none');
+            $('.error-edit-yearly').addClass('d-none');
+            $('.error-edit-monthly').addClass('d-none');
             $('#edit-modal').modal('show');
 
             id_edit = $(this).data('id');
@@ -507,31 +513,35 @@
                     $('.error-add-monthly').addClass('d-none');
 
                     if (data.errors) {
-                        setTimeout(function() {
-                            $('#add-modal').modal('show');
-                            toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
-                        }, 500);
-
-                        /*if (data.errors.name) {
-                            toastr.error('Name Error!', 'Error Alert', {timeOut: 5000});
+                        if (data.errors.name) {
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors.name, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             $('.error-add-name').removeClass('d-none');
                             $('.error-add-name').text(data.errors.name);
                         }
                         if (data.errors.yearly) {
-                            toastr.error('Year Error!', 'Error Alert', {timeOut: 5000});
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors.yearly, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             $('.error-add-yearly').removeClass('d-none');
                             $('.error-add-yearly').text(data.errors.yearly);
                         }
                         if (data.errors.monthly) {
-                            toastr.error('Month Error!', 'Error Alert', {timeOut: 5000});
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors.monthly, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             $('.error-add-monthly').removeClass('d-none');
                             $('.error-add-monthly').text(data.errors.monthly);
-                        }*/
+                        }
                     } else {
                         toastr.success('Successfully added Date!', 'Success Alert', {timeOut: 5000});
                         $('#datatable').append(
                             "<tr id='daily-id-" + data.id + "'>" +
-                                "<td>" + data.name + "</td>" +
+                                "<td>" + get_date(data.name) + "</td>" +
                                 "<td>" + data.yearly_achievement.name + "</td>" +
                                 "<td>" + convert_month(data.monthly_achievement.name) + "</td>" +
                                 "<td>" + ((value.target) ? format_money(parseFloat(value.target)) : '0') + " Ton" + "</td>" +
@@ -582,31 +592,35 @@
                     $('.error-edit-monthly').addClass('d-none');
 
                     if (data.errors) {
-                        setTimeout(function() {
-                            $('#edit-modal').modal('show');
-                            toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
-                        }, 500);
-
-                        /*if (data.errors.name) {
-                            toastr.error('Name Error!', 'Error Alert', {timeOut: 5000});
+                        if (data.errors.name) {
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors.name, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             $('.error-edit-name').removeClass('d-none');
                             $('.error-edit-name').text(data.errors.name);
                         }
                         if (data.errors.yearly) {
-                            toastr.error('Year Error!', 'Error Alert', {timeOut: 5000});
-                            $('.error-add-yearly').removeClass('d-none');
-                            $('.error-add-yearly').text(data.errors.yearly);
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors.yearly, 'Error Alert', {timeOut: 5000});
+                            }, 500);
+                            $('.error-edit-yearly').removeClass('d-none');
+                            $('.error-edit-yearly').text(data.errors.yearly);
                         }
                         if (data.errors.montly) {
-                            toastr.error('Month Error!', 'Error Alert', {timeOut: 5000});
-                            $('.error-add-montly').removeClass('d-none');
-                            $('.error-add-montly').text(data.errors.montly);
-                        }*/
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors.monthly, 'Error Alert', {timeOut: 5000});
+                            }, 500);
+                            $('.error-edit-montly').removeClass('d-none');
+                            $('.error-edit-montly').text(data.errors.montly);
+                        }
                     } else {
                         toastr.success('Successfully updated Date!', 'Success Alert', {timeOut: 5000});
                         $('#daily-id-' + data.id).replaceWith(
                             "<tr id='daily-id-" + data.id + "'>" +
-                                "<td>" + data.name + "</td>" +
+                                "<td>" + get_date(data.name) + "</td>" +
                                 "<td>" + data.yearly_achievement.name + "</td>" +
                                 "<td>" + convert_month(data.monthly_achievement.name) + "</td>" +
                                 "<td>" + ((data.target) ? format_money(parseFloat(data.target)) : '0') + " Ton" + "</td>" +
@@ -722,7 +736,7 @@
                                             console.log(value);
                                             $('#datatable').append(
                                                 "<tr id='daily-id-" + value.id + "'>" +
-                                                    "<td>" + value.name + "</td>" +
+                                                    "<td>" + get_date(value.name) + "</td>" +
                                                     "<td>" + /*get_year_value(value.yearly_achievement.start, value.yearly_achievement.end, value.monthly_achievement.name)*/ value.monthly_achievement.year_name + "</td>" +
                                                     "<td>" + convert_month(value.monthly_achievement.name) + "</td>" +
                                                     "<td>" + ((value.target) ? format_money(parseFloat(value.target)) : '0') + " Ton" + "</td>" +
@@ -801,7 +815,7 @@
                                             $('#daily-generate').append(
                                                 "<div class='col-md-12'>" +
                                                     "<div class='form-group row'>" +
-                                                        "<label for='' class='col-sm-6 col-form-label'>" + "Tanggal " + value.name + "</label>" +
+                                                        "<label for='' class='col-sm-6 col-form-label'>" + get_date(value.name) + "</label>" +
                                                         "<div class='col-sm-6'>" +
                                                             "<input class='form-control generate-result' placeholder='Target' name='daily" + value.id + "' type='text' value='" + ((value.target) ? value.target : '') + "' disabled>" +
                                                         "</div>" +
@@ -852,7 +866,7 @@
                                                                                 console.log(value);
                                                                                 $('#daily-id-' + value.id).replaceWith(
                                                                                     "<tr id='daily-id-" + value.id + "'>" +
-                                                                                        "<td>" + value.name + "</td>" +
+                                                                                        "<td>" + get_date(value.name) + "</td>" +
                                                                                         "<td>" + value.monthly_achievement.year_name + "</td>" +
                                                                                         "<td>" + convert_month(value.monthly_achievement.name) + "</td>" +
                                                                                         "<td>" + ((value.target) ? format_money(parseFloat(value.target)) : '0') + " Ton" + "</td>" +
@@ -938,6 +952,14 @@
             } else {
                 return date_start.getFullYear();
             }
+        }
+
+        function get_date(date) {
+            console.log(date);
+            date = new Date(date);
+            const month = ['January', 'February', 'March', 'April', 'Mei', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            return day[date.getDay()] + ', ' + date.getDate() + ' ' + month[date.getMonth()] + ' ' + date.getFullYear();
         }
     </script>
 @endsection

@@ -19,7 +19,7 @@ class CreateYearlyInboundsTable extends Migration
             $table->bigInteger('monthly_inbound_id')->unsigned();
             $table->string('name');
             $table->bigInteger('total');
-            $table->enum('status', ['Tercapai', 'Tidak Tercapai']);
+            $table->enum('status', ['Tercapai', 'Belum Tercapai']);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -16,4 +16,8 @@ class DailyAchievement extends Model
     public function monthly_achievement() {
         return $this->belongsTo('App\Models\Admin\MonthlyAchievement');
     }
+
+    public function daily_inbounds() {
+        return $this->hasMany('App\Models\Admin\DailyInbound');
+    }
 }

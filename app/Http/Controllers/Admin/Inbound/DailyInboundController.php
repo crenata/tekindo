@@ -21,7 +21,8 @@ use Validator;
 class DailyInboundController extends Controller
 {
     protected $rules = [
-        'daily_achievement_id' => 'required|numeric'
+        'daily_achievement_id' => 'required|numeric',
+        'total' => 'required|numeric'
     ];
 
     /**
@@ -61,17 +62,56 @@ class DailyInboundController extends Controller
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         } else {
             $daily_achievement = DailyAchievement::where('id', $request->daily_achievement_id)->firstOrFail();
+            if ($daily_achievement->target == 0 || $daily_achievement->target == null) {
+                return response()->json(['errors' => 'Please generate target first, before add daily inbound!']);
+            } else {
+                $daily = new DailyInbound;
 
-            $daily = new DailyInbound;
+                $daily->yearly_achievement_id = $request->yearly_achievement_id;
+                $daily->monthly_achievement_id = $request->monthly_achievement_id;
+                $daily->daily_achievement_id = $request->daily_achievement_id;
+                $daily->total = $request->total;
+                $daily->status = (($request->total >= $daily_achievement->target) ? 'Tercapai' : 'Belum Tercapai');
+                $daily->note = $request->note;
 
-            $daily->daily_achievement_id = $request->daily_achievement_id;
-            $daily->total = $request->total;
-            $daily->status = (($request->total >= $daily_achievement->target) ? 'Tercapai' : 'Belum Tercapai');
-            $daily->note = $request->note;
+                $daily->save();
 
-            $daily->save();
+                $days = DailyInbound::where('monthly_achievement_id', $request->monthly_achievement_id)->get();
 
-            return response()->json($daily->load('daily_achievement'));
+                $total_sebulan = 0;
+
+                foreach ($days as $day) {
+                    $total_sebulan += $day->total;
+                }
+
+                $monthly = MonthlyInbound::firstOrNew(['monthly_achievement_id' => $request->monthly_achievement_id]);
+                $monthly->yearly_achievement_id = $request->yearly_achievement_id;
+                $monthly->daily_inbound_id = $daily->id;
+                $monthly->name = $daily->monthly_achievement->name;
+                $monthly->total = $total_sebulan;
+                $monthly->status = (($total_sebulan >= $daily->monthly_achievement->target) ? 'Tercapai' : 'Belum Tercapai');
+
+                $monthly->save();
+
+                $months = MonthlyInbound::where('yearly_achievement_id', $request->yearly_achievement_id)->get();
+
+                $total_setahun = 0;
+
+                foreach ($months as $month) {
+                    $total_setahun += $month->total;
+                }
+
+                $yearly = YearlyInbound::firstOrNew(['yearly_achievement_id' => $request->yearly_achievement_id]);
+                $yearly->monthly_inbound_id = $monthly->id;
+                $yearly->name = $monthly->yearly_achievement->name;
+                $yearly->total = $total_setahun;
+                $yearly->status = (($total_setahun >= $monthly->yearly_achievement->target) ? 'Tercapai' : 'Belum Tercapai');
+
+                $yearly->save();
+
+                /*return response()->json($monthly);*/
+                return response()->json($daily->load('daily_achievement'));
+            }
         }
     }
 
@@ -112,17 +152,55 @@ class DailyInboundController extends Controller
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         } else {
             $daily_achievement = DailyAchievement::where('id', $request->daily_achievement_id)->firstOrFail();
+            if ($daily_achievement->target == 0 || $daily_achievement->target == null) {
+                return response()->json(['errors' => 'Please generate target first, before edit daily inbound!']);
+            } else {
+                $daily = DailyInbound::findOrFail($id);
 
-            $daily = DailyInbound::findOrFail($id);
+                $daily->yearly_achievement_id = $request->yearly_achievement_id;
+                $daily->monthly_achievement_id = $request->monthly_achievement_id;
+                $daily->daily_achievement_id = $request->daily_achievement_id;
+                $daily->total = $request->total;
+                $daily->status = (($request->total >= $daily_achievement->target) ? 'Tercapai' : 'Belum Tercapai');
+                $daily->note = $request->note;
 
-            $daily->daily_achievement_id = $request->daily_achievement_id;
-            $daily->total = $request->total;
-            $daily->status = (($request->total >= $daily_achievement->target) ? 'Tercapai' : 'Belum Tercapai');
-            $daily->note = $request->note;
+                $daily->save();
 
-            $daily->save();
+                $days = DailyInbound::where('monthly_achievement_id', $request->monthly_achievement_id)->get();
 
-            return response()->json($daily->load('daily_achievement'));
+                $total_sebulan = 0;
+
+                foreach ($days as $day) {
+                    $total_sebulan += $day->total;
+                }
+
+                $monthly = MonthlyInbound::firstOrNew(['monthly_achievement_id' => $request->monthly_achievement_id]);
+                $monthly->yearly_achievement_id = $request->yearly_achievement_id;
+                $monthly->daily_inbound_id = $daily->id;
+                $monthly->name = $daily->monthly_achievement->name;
+                $monthly->total = $total_sebulan;
+                $monthly->status = (($total_sebulan >= $daily->monthly_achievement->target) ? 'Tercapai' : 'Belum Tercapai');
+
+                $monthly->save();
+
+                $months = MonthlyInbound::where('yearly_achievement_id', $request->yearly_achievement_id)->get();
+
+                $total_setahun = 0;
+
+                foreach ($months as $month) {
+                    $total_setahun += $month->total;
+                }
+
+                $yearly = YearlyInbound::firstOrNew(['yearly_achievement_id' => $request->yearly_achievement_id]);
+                $yearly->monthly_inbound_id = $monthly->id;
+                $yearly->name = $monthly->yearly_achievement->name;
+                $yearly->total = $total_setahun;
+                $yearly->status = (($total_setahun >= $monthly->yearly_achievement->target) ? 'Tercapai' : 'Belum Tercapai');
+
+                $yearly->save();
+
+                return response()->json($daily->load('daily_achievement'));
+            }
         }
     }
 

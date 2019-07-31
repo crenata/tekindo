@@ -37,7 +37,7 @@
                                     {{ Form::label('yearly_achievement_id', 'Year', array('class' => 'col-sm-6 col-form-label')) }}
                                     <div class="col-sm-12">
                                         <select name="yearly_achievement_id" id="add-yearly" class="form-control" required="">
-                                            <option>-- Select Year --</option>
+                                            <option>-- Select Periode --</option>
                                             @foreach($yearlys as $yearly)
                                                 <option value="{{ $yearly->id }}">{{ $yearly->name }}</option>
                                             @endforeach
@@ -52,7 +52,7 @@
                                     {{ Form::label('monthly_achievement_id', 'Month', array('class' => 'col-sm-6 col-form-label')) }}
                                     <div class="col-sm-12">
                                         <select name="monthly_achievement_id" id="add-monthly" class="form-control" required="">
-                                            <option>Select Year First</option>
+                                            <option>Select Periode First</option>
                                         </select>
                                         <div class="alert alert-danger d-none error-add-monthly p-2 mt-2"></div>
                                     </div>
@@ -76,7 +76,7 @@
                                     {{ Form::label('total', 'Total', array('class' => 'col-sm-6 col-form-label')) }}
                                     <div class="col-sm-12">
                                         <div class="input-group">
-                                            {{ Form::text('total', null, array('class' => 'form-control', 'id' => 'add-total', 'required' => '', 'placeholder' => 'Total')) }}
+                                            {{ Form::number('total', null, array('class' => 'form-control', 'id' => 'add-total', 'required' => '', 'placeholder' => 'Total')) }}
                                             <div class="input-group-append">
                                                 <span class="input-group-text bg-info text-white">Ton</span>
                                             </div>
@@ -126,6 +126,11 @@
                                     <td class="show-date"></td>
                                 </tr>
                                 <tr>
+                                    <td style="width: 150px;">Target</td>
+                                    <td style="width: 10px;">:</td>
+                                    <td class="show-target"></td>
+                                </tr>
+                                <tr>
                                     <td style="width: 150px;">Total</td>
                                     <td style="width: 10px;">:</td>
                                     <td class="show-total"></td>
@@ -170,7 +175,7 @@
                                     {{ Form::label('yearly_achievement_id', 'Year', array('class' => 'col-sm-6 col-form-label')) }}
                                     <div class="col-sm-12">
                                         <select name="yearly_achievement_id" id="edit-yearly" class="form-control">
-                                            <option>-- Select Year --</option>
+                                            <option>-- Select Periode --</option>
                                             @foreach($yearlys as $yearly)
                                                 <option value="{{ $yearly->id }}">{{ $yearly->name }}</option>
                                             @endforeach
@@ -185,7 +190,7 @@
                                     {{ Form::label('monthly_achievement_id', 'Month', array('class' => 'col-sm-6 col-form-label')) }}
                                     <div class="col-sm-12">
                                         <select name="monthly_achievement_id" id="edit-monthly" class="form-control">
-                                            <option>Select Year First</option>
+                                            <option>Select Periode First</option>
                                         </select>
                                         <div class="alert alert-danger d-none error-edit-monthly p-2 mt-2"></div>
                                     </div>
@@ -209,7 +214,7 @@
                                     {{ Form::label('total', 'Total', array('class' => 'col-sm-6 col-form-label')) }}
                                     <div class="col-sm-12">
                                         <div class="input-group">
-                                            {{ Form::text('total', null, array('class' => 'form-control', 'id' => 'edit-total', 'placeholder' => 'Total')) }}
+                                            {{ Form::number('total', null, array('class' => 'form-control', 'id' => 'edit-total', 'placeholder' => 'Total')) }}
                                             <div class="input-group-append">
                                                 <span class="input-group-text bg-info text-white">Ton</span>
                                             </div>
@@ -294,16 +299,16 @@
                                 <tbody id="dailys-crud">
                                 @foreach($dailys as $daily)
                                     <tr id="daily-id-{{ $daily->id }}">
-                                        <td>{{ $daily->daily_achievement->name }}</td>
+                                        <td>{{ date('D, j F Y', strtotime($daily->daily_achievement->name)) }}</td>
                                         <td>{{ $daily->daily_achievement->target }}</td>
                                         <td>{{ number_format($daily->total) }} Ton</td>
                                         <td>{{ $daily->status }} </td>
                                         <td>{{ substr(strip_tags($daily->note), 0, 100) }}{{ strlen(strip_tags($daily->note)) > 100 ? "..." : "" }}</td>
                                         <td class="actions">
-                                            <a href="javascript:void(0)" data-id="{{ $daily->id }}" data-yearlyachievementid="{{ $daily->daily_achievement->yearly_achievement_id }}" data-monthlyachievementid="{{ $daily->daily_achievement->monthly_achievement_id }}" data-dailyachievementid="{{ $daily->daily_achievement->id }}" data-total="{{ $daily->total }}" data-status="{{ $daily->status }}" data-note="{{ $daily->note }}" class="btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-daily" data-toggle="tooltip" data-original-title="Show">
+                                            <a href="javascript:void(0)" data-id="{{ $daily->id }}" data-date="{{ $daily->daily_achievement->name }}" data-yearlyachievementid="{{ $daily->daily_achievement->yearly_achievement_id }}" data-monthlyachievementid="{{ $daily->daily_achievement->monthly_achievement_id }}" data-dailyachievementid="{{ $daily->daily_achievement->id }}" data-total="{{ $daily->total }}" data-status="{{ $daily->status }}" data-note="{{ $daily->note }}" class="btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-daily" data-toggle="tooltip" data-original-title="Show">
                                                 <i class="icon md-wrench" aria-hidden="true"></i> Show
                                             </a>
-                                            <a href="javascript:void(0)" data-id="{{ $daily->id }}" data-yearlyachievementid="{{ $daily->daily_achievement->yearly_achievement_id }}" data-monthlyachievementid="{{ $daily->daily_achievement->monthly_achievement_id }}" data-dailyachievementid="{{ $daily->daily_achievement->id }}" data-total="{{ $daily->total }}" data-status="{{ $daily->status }}" data-note="{{ $daily->note }}" class="btn btn-sm btn-icon btn-pure btn-default on-default edit-row edit-daily" data-toggle="tooltip" data-original-title="Edit">
+                                            <a href="javascript:void(0)" data-id="{{ $daily->id }}" data-date="{{ $daily->daily_achievement->name }}" data-yearlyachievementid="{{ $daily->daily_achievement->yearly_achievement_id }}" data-monthlyachievementid="{{ $daily->daily_achievement->monthly_achievement_id }}" data-dailyachievementid="{{ $daily->daily_achievement->id }}" data-total="{{ $daily->total }}" data-status="{{ $daily->status }}" data-note="{{ $daily->note }}" class="btn btn-sm btn-icon btn-pure btn-default on-default edit-row edit-daily" data-toggle="tooltip" data-original-title="Edit">
                                                 <i class="icon md-edit" aria-hidden="true"></i> Edit
                                             </a>
                                             <a href="javascript:void(0)" data-id="{{ $daily->id }}" class="btn btn-sm btn-icon btn-pure btn-default on-default remove-row delete-daily" data-toggle="tooltip" data-original-title="Delete">
@@ -354,12 +359,16 @@
             $('#add-form').trigger('reset');
             $('#add-monthly').replaceWith(
                 "<select name='monthly_achievement_id' id='add-monthly' class='form-control' required=''>" +
-                    "<option value=''>Select Year First</option>" +
+                    "<option value=''>Select Periode First</option>" +
                 "</select>");
             $('#add-daily-achievement').replaceWith(
                 "<select name='daily_achievement_id' id='add-daily-achievement' class='form-control' required=''>" +
                     "<option value=''>Select Month First</option>"+
                 "</select>");
+            $('.error-add-daily-achievement').addClass('d-none');
+            $('.error-add-total').addClass('d-none');
+            $('.error-add-status').addClass('d-none');
+            $('.error-add-note').addClass('d-none');
             $('#add-modal').modal('show');
         });
 
@@ -377,7 +386,8 @@
 
         /* Show */
         $(document).on('click', '.show-daily', function() {
-            $('.show-date').text($(this).data('dailyachievementid'));
+            $('.show-date').text(get_date($(this).data('date')));
+            $('.show-target').text((($(this).data('target')) ? format_money($(this).data('target')) + ' Ton' : 0));
             $('.show-total').text(format_money($(this).data('total')) + ' Ton');
             $('.show-status').text($(this).data('status'));
             $('.show-note').text($(this).data('note'));
@@ -390,6 +400,10 @@
             $('#edit-yearly').val($(this).data('yearlyachievementid'));
             $('#edit-total').val($(this).data('total'));
             $('#edit-note').val($(this).data('note'));
+            $('.error-edit-daily-achievement').addClass('d-none');
+            $('.error-edit-total').addClass('d-none');
+            $('.error-edit-status').addClass('d-none');
+            $('.error-edit-note').addClass('d-none');
             $('#edit-modal').modal('show');
 
             let yearly_select = $(this).data('yearlyachievementid');
@@ -525,11 +539,15 @@
         function add_submit() {
             let add_form_data = new FormData();
 
+            let yearly_achievement_id = $('#add-yearly').val();
+            let monthly_achievement_id = $('#add-monthly').val();
             let daily_achievement_id = $('#add-daily-achievement').val();
             let total = $('#add-total').val();
             let status = $('#add-status').val();
             let note = $('#add-note').val();
 
+            add_form_data.append('yearly_achievement_id', yearly_achievement_id);
+            add_form_data.append('monthly_achievement_id', monthly_achievement_id);
             add_form_data.append('daily_achievement_id', daily_achievement_id);
             add_form_data.append('total', total);
             add_form_data.append('status', status);
@@ -543,51 +561,62 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
+                    console.log(data);
                     $('.error-add-daily-achievement').addClass('d-none');
                     $('.error-add-total').addClass('d-none');
                     $('.error-add-status').addClass('d-none');
                     $('.error-add-note').addClass('d-none');
 
                     if (data.errors) {
-                        setTimeout(function() {
-                            $('#add-modal').modal('show');
-                            toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
-                        }, 500);
-
-                        /*if (data.errors.daily_achievement_id) {
-                            toastr.error('Daily Achievement Error!', 'Error Alert', {timeOut: 5000});
+                        if (data.errors.daily_achievement_id) {
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors.daily_achievement_id, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             $('.error-add-daily_achievement_id').removeClass('d-none');
-                            $('.error-add-daily_achievement_id').text(data.errors.name);
+                            $('.error-add-daily_achievement_id').text(data.errors.daily_achievement_id);
                         }
                         if (data.errors.total) {
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors.total, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             toastr.error('Total Error!', 'Error Alert', {timeOut: 5000});
                             $('.error-add-total').removeClass('d-none');
-                            $('.error-add-total').text(data.errors.yearly);
+                            $('.error-add-total').text(data.errors.total);
                         }
                         if (data.errors.status) {
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors.status, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             toastr.error('Status Error!', 'Error Alert', {timeOut: 5000});
                             $('.error-add-status').removeClass('d-none');
-                            $('.error-add-status').text(data.errors.monthly);
+                            $('.error-add-status').text(data.errors.status);
                         }
                         if (data.errors.note) {
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors.note, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             toastr.error('Note Error!', 'Error Alert', {timeOut: 5000});
                             $('.error-add-note').removeClass('d-none');
-                            $('.error-add-note').text(data.errors.monthly);
-                        }*/
+                            $('.error-add-note').text(data.errors.note);
+                        }
                     } else {
                         toastr.success('Successfully added Date!', 'Success Alert', {timeOut: 5000});
                         $('#datatable').append(
                             "<tr id='daily-id-" + data.id + "'>" +
-                                "<td>" + data.daily_achievement.name + "</td>" +
+                                "<td>" + get_date(data.daily_achievement.name) + "</td>" +
                                 "<td>" + data.daily_achievement.target + "</td>" +
                                 "<td>" + format_money(parseFloat(data.total)) + " Ton" + "</td>" +
                                 "<td>" + data.status + "</td>" +
                                 "<td>" + data.note + "</td>" +
                                 "<td class='actions'>" +
-                                    "<a href='javascript:void(0)' data-id='" + data.id + "' data-yearlyachievementid='" + data.daily_achievement.yearly_achievement_id + "' data-monthlyachievementid='" + data.daily_achievement.monthly_achievement_id + "' data-dailyachievementid='" + data.daily_achievement.id + "' data-total='" + data.total + "' data-status='" + data.status + "' data-note='" + data.note + "' class='btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-daily' data-toggle='tooltip' data-original-title='Show'>" +
+                                    "<a href='javascript:void(0)' data-id='" + data.id + "' data-date='" + data.daily_achievement.name + "' data-yearlyachievementid='" + data.daily_achievement.yearly_achievement_id + "' data-monthlyachievementid='" + data.daily_achievement.monthly_achievement_id + "' data-dailyachievementid='" + data.daily_achievement.id + "' data-total='" + data.total + "' data-status='" + data.status + "' data-note='" + data.note + "' class='btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-daily' data-toggle='tooltip' data-original-title='Show'>" +
                                         "<i class='icon md-wrench' aria-hidden='true'></i> Show" +
                                     "</a>" +
-                                    "<a href='javascript:void(0)' data-id='" + data.id + "' data-yearlyachievementid='" + data.daily_achievement.yearly_achievement_id + "' data-monthlyachievementid='" + data.daily_achievement.monthly_achievement_id + "' data-dailyachievementid='" + data.daily_achievement.id + "' data-total='" + data.total + "' data-status='" + data.status + "' data-note='" + data.note + "' class='btn btn-sm btn-icon btn-pure btn-default on-default edit-row edit-daily' data-toggle='tooltip' data-original-title='Edit'>" +
+                                    "<a href='javascript:void(0)' data-id='" + data.id + "' data-date='" + data.daily_achievement.name + "' data-yearlyachievementid='" + data.daily_achievement.yearly_achievement_id + "' data-monthlyachievementid='" + data.daily_achievement.monthly_achievement_id + "' data-dailyachievementid='" + data.daily_achievement.id + "' data-total='" + data.total + "' data-status='" + data.status + "' data-note='" + data.note + "' class='btn btn-sm btn-icon btn-pure btn-default on-default edit-row edit-daily' data-toggle='tooltip' data-original-title='Edit'>" +
                                         "<i class='icon md-edit' aria-hidden='true'></i> Edit" +
                                     "</a>" +
                                     "<a href='javascript:void(0)' data-id='" + data.id + "' class='btn btn-sm btn-icon btn-pure btn-default on-default remove-row delete-daily' data-toggle='tooltip' data-original-title='Delete'>" +
@@ -607,12 +636,20 @@
             let edit_form_data = new FormData();
 
             let id = $('#id-edit').val();
+            let yearly_achievement_id = $('#edit-yearly').val();
+            let monthly_achievement_id = $('#edit-monthly').val();
             let daily_achievement_id = $('#edit-daily-achievement').val();
             let total = $('#edit-total').val();
             let status = $('#edit-status').val();
             let note = $('#edit-note').val();
 
+            console.log('yearly id => ', yearly_achievement_id);
+            console.log('monthly id => ', monthly_achievement_id);
+            console.log('daily id => ', daily_achievement_id);
+
             edit_form_data.append('id', id);
+            edit_form_data.append('yearly_achievement_id', yearly_achievement_id);
+            edit_form_data.append('monthly_achievement_id', monthly_achievement_id);
             edit_form_data.append('daily_achievement_id', daily_achievement_id);
             edit_form_data.append('total', total);
             edit_form_data.append('status', status);
@@ -633,45 +670,52 @@
                     $('.error-edit-note').addClass('d-none');
 
                     if (data.errors) {
-                        setTimeout(function() {
-                            $('#edit-modal').modal('show');
-                            toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
-                        }, 500);
-
-                        /*if (data.errors.daily_achievement_id) {
-                            toastr.error('Daily Achievement Error!', 'Error Alert', {timeOut: 5000});
+                        if (data.errors.daily_achievement_id) {
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors.daily_achievement_id, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             $('.error-edit-daily_achievement_id').removeClass('d-none');
                             $('.error-edit-daily_achievement_id').text(data.errors.name);
                         }
                         if (data.errors.total) {
-                            toastr.error('Total Error!', 'Error Alert', {timeOut: 5000});
-                            $('.error-add-total').removeClass('d-none');
-                            $('.error-add-total').text(data.errors.yearly);
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors.total, 'Error Alert', {timeOut: 5000});
+                            }, 500);
+                            $('.error-edit-total').removeClass('d-none');
+                            $('.error-edit-total').text(data.errors.total);
                         }
                         if (data.errors.status) {
-                            toastr.error('Status Error!', 'Error Alert', {timeOut: 5000});
-                            $('.error-add-status').removeClass('d-none');
-                            $('.error-add-status').text(data.errors.montly);
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors.status, 'Error Alert', {timeOut: 5000});
+                            }, 500);
+                            $('.error-edit-status').removeClass('d-none');
+                            $('.error-edit-status').text(data.errors.status);
                         }
                         if (data.errors.note) {
-                            toastr.error('Note Error!', 'Error Alert', {timeOut: 5000});
-                            $('.error-add-note').removeClass('d-none');
-                            $('.error-add-note').text(data.errors.montly);
-                        }*/
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors.note, 'Error Alert', {timeOut: 5000});
+                            }, 500);
+                            $('.error-edit-note').removeClass('d-none');
+                            $('.error-edit-note').text(data.errors.note);
+                        }
                     } else {
                         toastr.success('Successfully updated Date!', 'Success Alert', {timeOut: 5000});
                         $('#daily-id-' + data.id).replaceWith(
                             "<tr id='daily-id-" + data.id + "'>" +
-                                "<td>" + data.daily_achievement.name + "</td>" +
+                                "<td>" + get_date(data.daily_achievement.name) + "</td>" +
                                 "<td>" + data.daily_achievement.target + "</td>" +
                                 "<td>" + format_money(parseFloat(data.total)) + " Ton" + "</td>" +
                                 "<td>" + data.status + "</td>" +
                                 "<td>" + data.note + "</td>" +
                                 "<td class='actions'>" +
-                                    "<a href='javascript:void(0)' data-id='" + data.id + "' data-yearlyachievementid='" + data.daily_achievement.yearly_achievement_id + "' data-monthlyachievementid='" + data.daily_achievement.monthly_achievement_id + "' data-dailyachievementid='" + data.daily_achievement.id + "' data-total='" + data.total + "' data-status='" + data.status + "' data-note='" + data.note + "' class='btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-daily' data-toggle='tooltip' data-original-title='Show'>" +
+                                    "<a href='javascript:void(0)' data-id='" + data.id + "' data-date='" + data.daily_achievement.name + "' data-yearlyachievementid='" + data.daily_achievement.yearly_achievement_id + "' data-monthlyachievementid='" + data.daily_achievement.monthly_achievement_id + "' data-dailyachievementid='" + data.daily_achievement.id + "' data-total='" + data.total + "' data-status='" + data.status + "' data-note='" + data.note + "' class='btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-daily' data-toggle='tooltip' data-original-title='Show'>" +
                                         "<i class='icon md-wrench' aria-hidden='true'></i> Show" +
                                     "</a>" +
-                                    "<a href='javascript:void(0)' data-id='" + data.id + "' data-yearlyachievementid='" + data.daily_achievement.yearly_achievement_id + "' data-monthlyachievementid='" + data.daily_achievement.monthly_achievement_id + "' data-dailyachievementid='" + data.daily_achievement.id + "' data-total='" + data.total + "' data-status='" + data.status + "' data-note='" + data.note + "' class='btn btn-sm btn-icon btn-pure btn-default on-default edit-row edit-daily' data-toggle='tooltip' data-original-title='Edit'>" +
+                                    "<a href='javascript:void(0)' data-id='" + data.id + "' data-date='" + data.daily_achievement.name + "' data-yearlyachievementid='" + data.daily_achievement.yearly_achievement_id + "' data-monthlyachievementid='" + data.daily_achievement.monthly_achievement_id + "' data-dailyachievementid='" + data.daily_achievement.id + "' data-total='" + data.total + "' data-status='" + data.status + "' data-note='" + data.note + "' class='btn btn-sm btn-icon btn-pure btn-default on-default edit-row edit-daily' data-toggle='tooltip' data-original-title='Edit'>" +
                                         "<i class='icon md-edit' aria-hidden='true'></i> Edit" +
                                     "</a>" +
                                     "<a href='javascript:void(0)' data-id='" + data.id + "' class='btn btn-sm btn-icon btn-pure btn-default on-default remove-row delete-daily' data-toggle='tooltip' data-original-title='Delete'>" +
@@ -681,8 +725,11 @@
                             "</tr>");
                     }
                 },
-                error: function(data) {
-                    toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
+                error: function(xhr, status, error) {
+                    setTimeout(function() {
+                        $('#edit-modal').modal('show');
+                        toastr.error(error, 'Error Alert', {timeOut: 5000});
+                    }, 500);
                 }
             });
         }

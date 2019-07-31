@@ -379,6 +379,8 @@
         /* Add */
         $(document).on('click', '.add-monthly', function() {
             $('#add-form').trigger('reset');
+            $('.error-add-name').addClass('d-none');
+            $('.error-add-yearly').addClass('d-none');
             $('#add-modal').modal('show');
         });
 
@@ -408,6 +410,9 @@
             $('#id-edit').val($(this).data('id'));
             $('#edit-name').val($(this).data('name'));
             $('#edit-yearly').val($(this).data('yearly'));
+
+            $('.error-edit-name').addClass('d-none');
+            $('.error-edit-yearly').addClass('d-none');
             $('#edit-modal').modal('show');
 
             id_edit = $(this).data('id');
@@ -462,21 +467,22 @@
                     $('.error-add-yearly').addClass('d-none');
                     
                     if (data.errors) {
-                        setTimeout(function() {
-                            $('#add-modal').modal('show');
-                            toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
-                        }, 500);
-
-                        /*if (data.errors.name) {
-                            toastr.error('Name Error!', 'Error Alert', {timeOut: 5000});
+                        if (data.errors.name) {
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors.name, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             $('.error-add-name').removeClass('d-none');
                             $('.error-add-name').text(data.errors.name);
                         }
                         if (data.errors.yearly) {
-                            toastr.error('Year Error!', 'Error Alert', {timeOut: 5000});
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors.yearly, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             $('.error-add-yearly').removeClass('d-none');
                             $('.error-add-yearly').text(data.errors.yearly);
-                        }*/
+                        }
                     } else {
                         toastr.success('Successfully added Month!', 'Success Alert', {timeOut: 5000});
                         $('#datatable').append(
@@ -528,21 +534,22 @@
                     $('.error-edit-yearly').addClass('d-none');
                     
                     if (data.errors) {
-                        setTimeout(function() {
-                            $('#edit-modal').modal('show');
-                            toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
-                        }, 500);
-
-                        /*if (data.errors.name) {
-                            toastr.error('Name Error!', 'Error Alert', {timeOut: 5000});
+                        if (data.errors.name) {
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors.name, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             $('.error-edit-name').removeClass('d-none');
                             $('.error-edit-name').text(data.errors.name);
                         }
                         if (data.errors.yearly) {
-                            toastr.error('Year Error!', 'Error Alert', {timeOut: 5000});
-                            $('.error-add-yearly').removeClass('d-none');
-                            $('.error-add-yearly').text(data.errors.yearly);
-                        }*/
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors.yearly, 'Error Alert', {timeOut: 5000});
+                            }, 500);
+                            $('.error-edit-yearly').removeClass('d-none');
+                            $('.error-edit-yearly').text(data.errors.yearly);
+                        }
                     } else {
                         toastr.success('Successfully updated Month!', 'Success Alert', {timeOut: 5000});
                         $('#monthly-id-' + data.id).replaceWith(

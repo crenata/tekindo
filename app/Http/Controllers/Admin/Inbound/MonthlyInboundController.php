@@ -5,6 +5,19 @@ namespace App\Http\Controllers\Admin\Inbound;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Helpers\Helper;
+
+use App\Models\Admin\YearlyAchievement;
+use App\Models\Admin\MonthlyAchievement;
+use App\Models\Admin\DailyAchievement;
+
+use App\Models\Admin\DailyInbound;
+use App\Models\Admin\MonthlyInbound;
+use App\Models\Admin\YearlyInbound;
+
+use Session;
+use Validator;
+
 class MonthlyInboundController extends Controller
 {
     /**
@@ -14,7 +27,10 @@ class MonthlyInboundController extends Controller
      */
     public function index()
     {
-        //
+        $yearlys = YearlyAchievement::all();
+        $monthlys = MonthlyInbound::all();
+        $dailys = DailyInbound::all();
+        return view('admin.pages.inbound.monthly.index')->withYearlys($yearlys)->withMonthlys($monthlys)->withDailys($dailys);
     }
 
     /**

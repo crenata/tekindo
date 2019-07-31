@@ -16,4 +16,16 @@ class YearlyAchievement extends Model
     public function daily_achievements() {
         return $this->hasMany('App\Models\Admin\DailyAchievement');
     }
+
+    public function yearly_inbounds() {
+        return $this->hasMany('App\Models\Admin\YearlyInbound');
+    }
+
+    public function monthly_inbounds() {
+        return $this->hasMany('App\Models\Admin\MonthlyInbound');
+    }
+
+    public function daily_inbounds() {
+        return $this->hasMany('App\Models\Admin\DailyInbound');
+    }
 }

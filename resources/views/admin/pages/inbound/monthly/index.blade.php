@@ -8,7 +8,7 @@
 
 @section('pageheader')
     <div class="page-header">
-        <h1 class="page-title">Achievement</h1>
+        <h1 class="page-title">Inbound</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="{{ route('admin.home') }}">Dashboard</a>
@@ -19,22 +19,6 @@
 @endsection
 
 @section('content')
-    @php
-        function convert_month($month) {
-            if ($month == 1) return 'January';
-            else if ($month == 2) return 'February';
-            else if ($month == 3) return 'Maret';
-            else if ($month == 4) return 'April';
-            else if ($month == 5) return 'Mei';
-            else if ($month == 6) return 'Juni';
-            else if ($month == 7) return 'Juli';
-            else if ($month == 8) return 'Agustus';
-            else if ($month == 9) return 'September';
-            else if ($month == 10) return 'Oktober';
-            else if ($month == 11) return 'November';
-            else if ($month == 12) return 'Desember';
-        }
-    @endphp
     <!-- Add -->
     <div class="modal fade" id="add-modal" tabindex="-1" role="dialog" aria-labelledby="add-modal-title" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -223,55 +207,6 @@
         </div>
     </div>
 
-    <!-- Auto Generate -->
-    <div class="modal fade" id="auto-generate-modal" tabindex="-1" role="dialog" aria-labelledby="auto-generate-title" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="auto-generate-title">Auto Generate</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal" id="auto-generate-form">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <select name="yearly_achievement_id" id="auto-generate-yearly" class="form-control" required="">
-                                            <option>-- Select Periode --</option>
-                                            @foreach($yearlys as $yearly)
-                                                <option value="{{ $yearly->id }}">{{ $yearly->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="text-right">
-                                            <a href="javascript:void(0)" class="btn btn-sm btn-success btn-generate">
-                                                <i class="icon md-plus" aria-hidden="true"></i> Generate
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-12 mt-30">
-                                <div id="monthly-generate">
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary auto-generate-save" data-dismiss="modal">Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="row">
         <div class="col-md-12">
             <div class="panel">
@@ -289,23 +224,13 @@
                             </div>
                         </div>--}}
 
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-15">
                             <select name="yearly_achievement_id" id="datatable-yearly" class="form-control" required="">
                                 <option>-- Select Periode --</option>
                                 @foreach($yearlys as $yearly)
                                     <option value="{{ $yearly->id }}">{{ $yearly->name }}</option>
                                 @endforeach
                             </select>
-                        </div>
-
-                        <div class="col-md-3"></div>
-
-                        <div class="col-md-6">
-                            <div class="mb-15 text-right">
-                                <a href="javascript:void(0)" class="btn btn-sm btn-success add-auto-generate" data-toggle="modal" data-target="#auto-generate-modal">
-                                    <i class="icon md-plus" aria-hidden="true"></i> Auto Generate
-                                </a>
-                            </div>
                         </div>
                     </div>
 
@@ -315,8 +240,9 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Year</th>
                                         <th>Target</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
                                         {{--<th>Action</th>--}}
                                     </tr>
                                 </thead>
@@ -349,8 +275,9 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Year</th>
                                         <th>Target</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
                                         {{--<th>Action</th>--}}
                                     </tr>
                                 </thead>
@@ -379,6 +306,8 @@
         /* Add */
         $(document).on('click', '.add-monthly', function() {
             $('#add-form').trigger('reset');
+            $('.error-add-name').addClass('d-none');
+            $('.error-add-yearly').addClass('d-none');
             $('#add-modal').modal('show');
         });
 
@@ -408,6 +337,8 @@
             $('#id-edit').val($(this).data('id'));
             $('#edit-name').val($(this).data('name'));
             $('#edit-yearly').val($(this).data('yearly'));
+            $('.error-edit-name').addClass('d-none');
+            $('.error-edit-yearly').addClass('d-none');
             $('#edit-modal').modal('show');
 
             id_edit = $(this).data('id');
@@ -462,21 +393,22 @@
                     $('.error-add-yearly').addClass('d-none');
                     
                     if (data.errors) {
-                        setTimeout(function() {
-                            $('#add-modal').modal('show');
-                            toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
-                        }, 500);
-
-                        /*if (data.errors.name) {
-                            toastr.error('Name Error!', 'Error Alert', {timeOut: 5000});
+                        if (data.errors.name) {
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors.name, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             $('.error-add-name').removeClass('d-none');
                             $('.error-add-name').text(data.errors.name);
                         }
                         if (data.errors.yearly) {
-                            toastr.error('Year Error!', 'Error Alert', {timeOut: 5000});
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors.yearly, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             $('.error-add-yearly').removeClass('d-none');
                             $('.error-add-yearly').text(data.errors.yearly);
-                        }*/
+                        }
                     } else {
                         toastr.success('Successfully added Month!', 'Success Alert', {timeOut: 5000});
                         $('#datatable').append(
@@ -528,21 +460,22 @@
                     $('.error-edit-yearly').addClass('d-none');
                     
                     if (data.errors) {
-                        setTimeout(function() {
-                            $('#edit-modal').modal('show');
-                            toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
-                        }, 500);
-
-                        /*if (data.errors.name) {
-                            toastr.error('Name Error!', 'Error Alert', {timeOut: 5000});
+                        if (data.errors.name) {
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors.name, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                             $('.error-edit-name').removeClass('d-none');
                             $('.error-edit-name').text(data.errors.name);
                         }
                         if (data.errors.yearly) {
-                            toastr.error('Year Error!', 'Error Alert', {timeOut: 5000});
-                            $('.error-add-yearly').removeClass('d-none');
-                            $('.error-add-yearly').text(data.errors.yearly);
-                        }*/
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors.yearly, 'Error Alert', {timeOut: 5000});
+                            }, 500);
+                            $('.error-edit-yearly').removeClass('d-none');
+                            $('.error-edit-yearly').text(data.errors.yearly);
+                        }
                     } else {
                         toastr.success('Successfully updated Month!', 'Success Alert', {timeOut: 5000});
                         $('#monthly-id-' + data.id).replaceWith(
@@ -590,138 +523,28 @@
             return n.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,').replace('.00', '');
         }
 
-        $('#auto-generate-yearly').change(function() {
-            let auto_generate_yearly = $(this).val();
-            $.ajax({
-                type: 'GET',
-                url: 'daily/monthly/yearly/' + $(this).val(),
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                success: function(data) {
-                    if (data.errors) {
-                        
-                    } else {
-                        // toastr.success('Successfully loaded Brand!', 'Success Alert', {timeOut: 5000});
-                        $('#monthly-generate').replaceWith(
-                            "<div id='monthly-generate'>" +
-                                "<div class='row'>"
-                        );
-                        $.each(data, function(index, value) {
-                            console.log(value);
-                            $('#monthly-generate').append(
-                                "<div class='col-md-12'>" +
-                                    "<div class='form-group row'>" +
-                                        "<label for='' class='col-sm-6 col-form-label'>" + convert_month(value.name) + '&ensp;' + /*get_year_value(value.yearly_achievement.start, value.yearly_achievement.end, value.name)*/ value.year_name + "</label>" +
-                                        "<div class='col-sm-6'>" +
-                                            "<input class='form-control generate-result' placeholder='Target' name='monthly" + value.id + "' type='text' value='" + ((value.target) ? value.target : '') + "' disabled>" +
-                                        "</div>" +
-                                    "</div>" +
-                                "</div>"
-                            );
-                        });
-                        $('#monthly-generate').append(
-                                "</div>" +
-                            "</div>"
-                        );
-
-                        $(document).on('click', '.btn-generate', function() {
-                            if (auto_generate_yearly != undefined || auto_generate_yearly != 0 || auto_generate_yearly != null) {
-                                $.ajax({
-                                    type: 'GET',
-                                    url: 'generate/yearly/' + auto_generate_yearly,
-                                    dataType: 'json',
-                                    processData: false,
-                                    contentType: false,
-                                    success: function(data) {
-                                        if (data.errors) {
-                                            
-                                        } else {
-                                            console.log(data);
-                                            $('.generate-result').val(data);
-
-                                            $(document).on('click', '.auto-generate-save', function() {
-                                                let save_target = new FormData();
-
-                                                save_target.append('yearly_id', auto_generate_yearly);
-                                                save_target.append('target', data);
-
-                                                $.ajax({
-                                                    type: 'POST',
-                                                    url: 'monthly/save/generate/target',
-                                                    data: save_target,
-                                                    dataType: 'json',
-                                                    processData: false,
-                                                    contentType: false,
-                                                    success: function(data) {
-                                                        if (data.errors) {
-                                                            
-                                                        } else {
-                                                            console.log(data);
-                                                            $.each(data, function(index, value) {
-                                                                console.log(value);
-                                                                $('#monthly-id-' + value.id).replaceWith(
-                                                                    "<tr id='monthly-id-" + value.id + "'>" +
-                                                                        "<td>" + convert_month(value.name) + "</td>" +
-                                                                        "<td>" + value.yearly_achievement.name + "</td>" +
-                                                                        "<td>" + ((value.target) ? format_money(parseFloat(value.target)) : '0') + " Ton" + "</td>" +
-                                                                        /*"<td class='actions'>" +
-                                                                            "<a href='javascript:void(0)' data-id='" + value.id + "' data-name='" + value.name + "' data-yearly='" + value.yearly_achievement.name + "' data-target='" + value.target + "' class='btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-monthly' data-toggle='tooltip' data-original-title='Show'>" +
-                                                                                "<i class='icon md-wrench' aria-hidden='true'></i> Show" +
-                                                                            "</a>" +
-                                                                            "<a href='javascript:void(0)' data-id='" + value.id + "' data-name='" + value.name + "' data-yearly='" + value.yearly_achievement.id + "' data-target='" + value.target + "' class='btn btn-sm btn-icon btn-pure btn-default on-default edit-row edit-monthly' data-toggle='tooltip' data-original-title='Edit'>" +
-                                                                                "<i class='icon md-edit' aria-hidden='true'></i> Edit" +
-                                                                            "</a>" +
-                                                                            "<a href='javascript:void(0)' data-id='" + value.id + "' class='btn btn-sm btn-icon btn-pure btn-default on-default remove-row delete-monthly' data-toggle='tooltip' data-original-title='Delete'>" +
-                                                                                "<i class='icon md-delete' aria-hidden='true'></i> Delete" +
-                                                                            "</a>" +
-                                                                        "</td>" +*/
-                                                                    "</tr>");
-                                                            });
-                                                        }
-                                                    },
-                                                    error: function(data) {
-                                                        toastr.error('Failed', 'Error Alert', {timeOut: 5000});
-                                                    }
-                                                });
-                                            });
-                                        }
-                                    },
-                                    error: function(data) {
-                                        toastr.error('Failed', 'Error Alert', {timeOut: 5000});
-                                    }
-                                });
-                            }
-                        });
-                    }
-                },
-                error: function(data) {
-                    toastr.error('Failed', 'Error Alert', {timeOut: 5000});
-                }
-            });
-        });
-
         $('#datatable-yearly').change(function() {
             $.ajax({
                 type: 'GET',
-                url: 'yearly/' + $(this).val(),
+                url: '{!! url('admin/inbound/yearly-inbound') !!}' + '/' + $(this).val(),
                 dataType: 'json',
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    console.log(data.monthly_achievements);
+                    console.log(data);
                     if (data.errors) {
 
                     } else {
                         // toastr.success('Successfully loaded Brand!', 'Success Alert', {timeOut: 5000});
                         $('#monthlys-crud').replaceWith("<tbody id='monthlys-crud'>");
-                        $.each(data.monthly_achievements, function(index, value) {
+                        $.each(data.inbounds, function(index, value) {
                             console.log(value);
                             $('#datatable').append(
                                 "<tr id='monthly-id-" + value.id + "'>" +
-                                    "<td>" + convert_month(value.name) + "</td>" +
-                                    "<td>" + /*get_year_value(data.start, data.end, value.name)*/ value.year_name + "</td>" +
-                                    "<td>" + ((value.target) ? format_money(parseFloat(value.target)) : '0') + " Ton" + "</td>" +
+                                    "<td>" + convert_month(value.name) + ' ' + value.monthly_achievement.year_name + "</td>" +
+                                    "<td>" + ((value.monthly_achievement.target) ? format_money(parseFloat(value.monthly_achievement.target)) : '0') + " Ton" + "</td>" +
+                                    "<td>" + ((value.total) ? format_money(parseFloat(value.total)) : '0') + " Ton" + "</td>" +
+                                    "<td>" + value.status + "</td>" +
                                     /*"<td class='actions'>" +
                                         "<a href='javascript:void(0)' data-id='" + value.id + "' data-name='" + value.name + "' data-yearly='" + value.yearly_achievement.name + "' data-target='" + value.target + "' class='btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-monthly' data-toggle='tooltip' data-original-title='Show'>" +
                                             "<i class='icon md-wrench' aria-hidden='true'></i> Show" +

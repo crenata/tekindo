@@ -19,6 +19,11 @@ use Validator;
 
 class YearlyAchievementController extends Controller
 {
+    protected $rules = [
+        'start' => 'required|date',
+        'end' => 'required|date',
+        'target' => 'required|numeric'
+    ];
     private $request, $yearly_id;
     /**
      * Display a listing of the resource.
@@ -50,12 +55,8 @@ class YearlyAchievementController extends Controller
     public function store(Request $request)
     {
         $this->request = $request;
-        $rules = [
-            'start' => 'required',
-            'end' => 'required',
-            'target' => 'required|numeric'
-        ];
-        $validator = Validator::make($request->all(), $rules);
+
+        $validator = Validator::make($request->all(), $this->rules);
 
         if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
@@ -165,13 +166,7 @@ class YearlyAchievementController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $rules = [
-            'start' => 'required',
-            'end' => 'required',
-            'target' => 'required|numeric'
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $this->rules);
 
         if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));

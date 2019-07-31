@@ -309,6 +309,9 @@
         /* Add */
         $(document).on('click', '.add-yearly', function() {
             $('#add-form').trigger('reset');
+            $('.error-add-start').addClass('d-none');
+            $('.error-add-end').addClass('d-none');
+            $('.error-add-target').addClass('d-none');
             $('#add-modal').modal('show');
         });
 
@@ -339,7 +342,13 @@
             $('#id-edit').val($(this).data('id'));
             $('#edit-start').val($(this).data('start'));
             $('#edit-end').val($(this).data('end'));
+            console.log($('#edit-start').val());
+            console.log($('#edit-end').val());
             $('#edit-target').val($(this).data('target'));
+
+            $('.error-edit-start').addClass('d-none');
+            $('.error-edit-end').addClass('d-none');
+            $('.error-edit-target').addClass('d-none');
             $('#edit-modal').modal('show');
 
             id_edit = $(this).data('id');
@@ -384,64 +393,73 @@
             add_form_data.append('end', end);
             add_form_data.append('target', target);
 
-            $.ajax({
-                type: 'POST',
-                url: 'yearly',
-                data: add_form_data,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                success: function(data) {
-                    $('.error-add-start').addClass('d-none');
-                    $('.error-add-target').addClass('d-none');
-                    
-                    if (data.errors) {
-                        setTimeout(function() {
-                            $('#add-modal').modal('show');
-                            toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
-                        }, 500);
+            if (start == null || start == undefined || start == '' || end == null || end == undefined || end == '') {
+                toastr.error('Mungkin Anda salah tanggal, Harap periksa kembali!', 'Error Alert', {timeOut: 5000});
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: 'yearly',
+                    data: add_form_data,
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        $('.error-add-start').addClass('d-none');
+                        $('.error-add-end').addClass('d-none');
+                        $('.error-add-target').addClass('d-none');
 
-                        /*if (data.errors.start) {
-                            toastr.error('Start Error!', 'Error Alert', {timeOut: 5000});
-                            $('.error-add-start').removeClass('d-none');
-                            $('.error-add-start').text(data.errors.name);
-                        }
-                        if (data.errors.end) {
-                            toastr.error('End Error!', 'Error Alert', {timeOut: 5000});
-                            $('.error-add-end').removeClass('d-none');
-                            $('.error-add-end').text(data.errors.name);
-                        }
-                        if (data.errors.target) {
-                            toastr.error('Target Error!', 'Error Alert', {timeOut: 5000});
-                            $('.error-add-target').removeClass('d-none');
-                            $('.error-add-target').text(data.errors.target);
-                        }*/
-                    } else {
-                        toastr.success('Successfully added Year!', 'Success Alert', {timeOut: 5000});
-                        $('#datatable').append(
-                            "<tr id='yearly-id-" + data.id + "'>" +
+                        if (data.errors) {
+                            if (data.errors.start) {
+                                setTimeout(function() {
+                                    $('#add-modal').modal('show');
+                                    toastr.error(data.errors.start, 'Error Alert', {timeOut: 5000});
+                                }, 500);
+                                $('.error-add-start').removeClass('d-none');
+                                $('.error-add-start').text(data.errors.start);
+                            }
+                            if (data.errors.end) {
+                                setTimeout(function() {
+                                    $('#add-modal').modal('show');
+                                    toastr.error(data.errors.end, 'Error Alert', {timeOut: 5000});
+                                }, 500);
+                                $('.error-add-end').removeClass('d-none');
+                                $('.error-add-end').text(data.errors.end);
+                            }
+                            if (data.errors.target) {
+                                setTimeout(function() {
+                                    $('#add-modal').modal('show');
+                                    toastr.error(data.errors.target, 'Error Alert', {timeOut: 5000});
+                                }, 500);
+                                $('.error-add-target').removeClass('d-none');
+                                $('.error-add-target').text(data.errors.target);
+                            }
+                        } else {
+                            toastr.success('Successfully added Year!', 'Success Alert', {timeOut: 5000});
+                            $('#datatable').append(
+                                "<tr id='yearly-id-" + data.id + "'>" +
                                 "<td>" + data.name + "</td>" +
                                 "<td>" + get_date(data.start) + "</td>" +
                                 "<td>" + get_date(data.end) + "</td>" +
                                 "<td>" + format_money(parseFloat(data.target)) + " Ton" + "</td>" +
                                 "<td class='actions'>" +
-                                    "<a href='javascript:void(0)' data-id='" + data.id + "' data-name='" + data.name + "' data-start='" + data.start + "' data-end='" + data.end + "' data-target='" + data.target + "' class='btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-yearly' data-toggle='tooltip' data-original-title='Show'>" +
-                                        "<i class='icon md-wrench' aria-hidden='true'></i> Show" +
-                                    "</a>" +
-                                    "<a href='javascript:void(0)' data-id='" + data.id + "' data-name='" + data.name + "' data-start='" + data.start + "' data-end='" + data.end + "' data-target='" + data.target + "' class='btn btn-sm btn-icon btn-pure btn-default on-default edit-row edit-yearly' data-toggle='tooltip' data-original-title='Edit'>" +
-                                        "<i class='icon md-edit' aria-hidden='true'></i> Edit" +
-                                    "</a>" +
-                                    "<a href='javascript:void(0)' data-id='" + data.id + "' class='btn btn-sm btn-icon btn-pure btn-default on-default remove-row delete-yearly' data-toggle='tooltip' data-original-title='Delete'>" +
-                                        "<i class='icon md-delete' aria-hidden='true'></i> Delete" +
-                                    "</a>" +
+                                "<a href='javascript:void(0)' data-id='" + data.id + "' data-name='" + data.name + "' data-start='" + data.start + "' data-end='" + data.end + "' data-target='" + data.target + "' class='btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-yearly' data-toggle='tooltip' data-original-title='Show'>" +
+                                "<i class='icon md-wrench' aria-hidden='true'></i> Show" +
+                                "</a>" +
+                                "<a href='javascript:void(0)' data-id='" + data.id + "' data-name='" + data.name + "' data-start='" + data.start + "' data-end='" + data.end + "' data-target='" + data.target + "' class='btn btn-sm btn-icon btn-pure btn-default on-default edit-row edit-yearly' data-toggle='tooltip' data-original-title='Edit'>" +
+                                "<i class='icon md-edit' aria-hidden='true'></i> Edit" +
+                                "</a>" +
+                                "<a href='javascript:void(0)' data-id='" + data.id + "' class='btn btn-sm btn-icon btn-pure btn-default on-default remove-row delete-yearly' data-toggle='tooltip' data-original-title='Delete'>" +
+                                "<i class='icon md-delete' aria-hidden='true'></i> Delete" +
+                                "</a>" +
                                 "</td>" +
-                            "</tr>");
+                                "</tr>");
+                        }
+                    },
+                    error: function(data) {
+                        toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
                     }
-                },
-                error: function(data) {
-                    toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
-                }
-            });
+                });
+            }
         }
 
         function edit_submit() {
@@ -458,64 +476,73 @@
             edit_form_data.append('target', target);
             edit_form_data.append('_method', 'PUT');
 
-            $.ajax({
-                type: 'POST',
-                url: 'yearly/' + id_edit,
-                data: edit_form_data,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                success: function(data) {
-                    $('.error-edit-name').addClass('d-none');
-                    $('.error-edit-target').addClass('d-none');
-                    
-                    if (data.errors) {
-                        setTimeout(function() {
-                            $('#edit-modal').modal('show');
-                            toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
-                        }, 500);
+            if (start == null || start == undefined || start == '' || end == null || end == undefined || end == '') {
+                toastr.error('Mungkin Anda salah tanggal, Harap periksa kembali!', 'Error Alert', {timeOut: 5000});
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: 'yearly/' + id_edit,
+                    data: edit_form_data,
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        $('.error-edit-start').addClass('d-none');
+                        $('.error-edit-end').addClass('d-none');
+                        $('.error-edit-target').addClass('d-none');
 
-                        /*if (data.errors.start) {
-                            toastr.error('Start Error!', 'Error Alert', {timeOut: 5000});
-                            $('.error-edit-start').removeClass('d-none');
-                            $('.error-edit-start').text(data.errors.name);
-                        }
-                        if (data.errors.end) {
-                            toastr.error('End Error!', 'Error Alert', {timeOut: 5000});
-                            $('.error-edit-end').removeClass('d-none');
-                            $('.error-edit-end').text(data.errors.name);
-                        }
-                        if (data.errors.target) {
-                            toastr.error('Target Error!', 'Error Alert', {timeOut: 5000});
-                            $('.error-add-target').removeClass('d-none');
-                            $('.error-add-target').text(data.errors.target);
-                        }*/
-                    } else {
-                        toastr.success('Successfully updated Year!', 'Success Alert', {timeOut: 5000});
-                        $('#yearly-id-' + data.id).replaceWith(
-                            "<tr id='yearly-id-" + data.id + "'>" +
+                        if (data.errors) {
+                            if (data.errors.start) {
+                                setTimeout(function() {
+                                    $('#edit-modal').modal('show');
+                                    toastr.error(data.errors.start, 'Error Alert', {timeOut: 5000});
+                                }, 500);
+                                $('.error-edit-start').removeClass('d-none');
+                                $('.error-edit-start').text(data.errors.start);
+                            }
+                            if (data.errors.end) {
+                                setTimeout(function() {
+                                    $('#edit-modal').modal('show');
+                                    toastr.error(data.errors.end, 'Error Alert', {timeOut: 5000});
+                                }, 500);
+                                $('.error-edit-end').removeClass('d-none');
+                                $('.error-edit-end').text(data.errors.end);
+                            }
+                            if (data.errors.target) {
+                                setTimeout(function() {
+                                    $('#edit-modal').modal('show');
+                                    toastr.error(data.errors.target, 'Error Alert', {timeOut: 5000});
+                                }, 500);
+                                $('.error-edit-target').removeClass('d-none');
+                                $('.error-edit-target').text(data.errors.target);
+                            }
+                        } else {
+                            toastr.success('Successfully updated Year!', 'Success Alert', {timeOut: 5000});
+                            $('#yearly-id-' + data.id).replaceWith(
+                                "<tr id='yearly-id-" + data.id + "'>" +
                                 "<td>" + data.name + "</td>" +
                                 "<td>" + get_date(data.start) + "</td>" +
                                 "<td>" + get_date(data.end) + "</td>" +
                                 "<td>" + format_money(parseFloat(data.target)) + " Ton" + "</td>" +
                                 "<td class='actions'>" +
-                                    "<a href='javascript:void(0)' data-id='" + data.id + "' data-name='" + data.name + "' data-start='" + data.start + "' data-end='" + data.end + "' data-target='" + data.target + "' class='btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-yearly' data-toggle='tooltip' data-original-title='Show'>" +
-                                        "<i class='icon md-wrench' aria-hidden='true'></i> Show" +
-                                    "</a>" +
-                                    "<a href='javascript:void(0)' data-id='" + data.id + "' data-name='" + data.name + "' data-start='" + data.start + "' data-end='" + data.end + "' data-target='" + data.target + "' class='btn btn-sm btn-icon btn-pure btn-default on-default edit-row edit-yearly' data-toggle='tooltip' data-original-title='Edit'>" +
-                                        "<i class='icon md-edit' aria-hidden='true'></i> Edit" +
-                                    "</a>" +
-                                    "<a href='javascript:void(0)' data-id='" + data.id + "' class='btn btn-sm btn-icon btn-pure btn-default on-default remove-row delete-yearly' data-toggle='tooltip' data-original-title='Delete'>" +
-                                        "<i class='icon md-delete' aria-hidden='true'></i> Delete" +
-                                    "</a>" +
+                                "<a href='javascript:void(0)' data-id='" + data.id + "' data-name='" + data.name + "' data-start='" + data.start + "' data-end='" + data.end + "' data-target='" + data.target + "' class='btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-yearly' data-toggle='tooltip' data-original-title='Show'>" +
+                                "<i class='icon md-wrench' aria-hidden='true'></i> Show" +
+                                "</a>" +
+                                "<a href='javascript:void(0)' data-id='" + data.id + "' data-name='" + data.name + "' data-start='" + data.start + "' data-end='" + data.end + "' data-target='" + data.target + "' class='btn btn-sm btn-icon btn-pure btn-default on-default edit-row edit-yearly' data-toggle='tooltip' data-original-title='Edit'>" +
+                                "<i class='icon md-edit' aria-hidden='true'></i> Edit" +
+                                "</a>" +
+                                "<a href='javascript:void(0)' data-id='" + data.id + "' class='btn btn-sm btn-icon btn-pure btn-default on-default remove-row delete-yearly' data-toggle='tooltip' data-original-title='Delete'>" +
+                                "<i class='icon md-delete' aria-hidden='true'></i> Delete" +
+                                "</a>" +
                                 "</td>" +
-                            "</tr>");
+                                "</tr>");
+                        }
+                    },
+                    error: function(data) {
+                        toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
                     }
-                },
-                error: function(data) {
-                    toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
-                }
-            });
+                });
+            }
         }
 
         function get_date(date) {
@@ -545,17 +572,5 @@
         function format_money(n) {
             return n.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,').replace('.00', '');
         }
-
-        /*$('#add-start').datepicker({
-            format: 'yyyy',
-            viewMode: 'years',
-            minViewMode: 'years'
-        });
-
-        $('#edit-name').datepicker({
-            format: 'yyyy',
-            viewMode: 'years',
-            minViewMode: 'years'
-        });*/
     </script>
 @endsection
