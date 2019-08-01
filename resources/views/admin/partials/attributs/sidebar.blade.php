@@ -7,6 +7,47 @@
             </a>
         </li>
 
+        <li class="site-menu-item has-sub {{ Request::is('admin/register', 'admin/show', 'admin/roles', 'admin/role') ? 'active' : '' }}">
+            <a href="javascript:void(0)">
+                <i class="site-menu-icon md-view-compact" aria-hidden="true"></i>
+                <span class="site-menu-title">Admin</span>
+                <span class="site-menu-arrow"></span>
+            </a>
+            <ul class="site-menu-sub">
+                <li class="site-menu-item {{ Request::is('admin/register') ? 'active' : '' }}">
+                    <a class="animsition-link" href="{{ route('admin.register') }}">
+                        <span class="site-menu-title">Register</span>
+                    </a>
+                </li>
+
+                <li class="site-menu-item {{ Request::is('admin/show') ? 'active' : '' }}">
+                    <a class="animsition-link" href="{{ route('admin.show') }}">
+                        <span class="site-menu-title">View</span>
+                    </a>
+                </li>
+
+                <li class="site-menu-item {{ Request::is('admin/role', 'admin/roles') ? 'active' : '' }}">
+                    <a href="javascript:void(0)">
+                        <span class="site-menu-title">Role</span>
+                        <span class="site-menu-arrow"></span>
+                    </a>
+                    <ul class="site-menu-sub">
+                        <li class="site-menu-item {{ Request::is('admin/role/create') ? 'active' : '' }}">
+                            <a class="animsition-link" href="{{ route('admin.role.create') }}">
+                                <span class="site-menu-title">Create</span>
+                            </a>
+                        </li>
+
+                        <li class="site-menu-item {{ Request::is('admin/roles') ? 'active' : '' }}">
+                            <a class="animsition-link" href="{{ route('admin.roles') }}">
+                                <span class="site-menu-title">View</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+
         <li class="site-menu-item has-sub {{ Request::is('admin/yearly', 'admin/monthly', 'admin/daily') ? 'active' : '' }}">
             <a href="javascript:void(0)">
                 <i class="site-menu-icon md-view-compact" aria-hidden="true"></i>

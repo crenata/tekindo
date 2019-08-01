@@ -3,7 +3,7 @@
 @section('title', 'Monthly')
 
 @section('stylesheets')
-    
+
 @endsection
 
 @section('pageheader')
@@ -251,7 +251,7 @@
                                         <tr id="monthly-id-{{ $monthly->id }}">
                                             <td>{{ convert_month($monthly->name) }}</td>
                                             <td>{{ $monthly->yearly_achievement->name }}</td>
-                                            <td>{{ number_format($monthly->target) }} Ton</td>
+                                            <td>{{ number_format($monthly->target, 2) }} Ton</td>
                                             <td class="actions">
                                                 <a href="javascript:void(0)" data-id="{{ $monthly->id }}" data-name="{{ $monthly->name }}" data-yearly="{{ $monthly->yearly_achievement->name }}" data-target="{{ $monthly->target }}" class="btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-monthly" data-toggle="tooltip" data-original-title="Show">
                                                     <i class="icon md-wrench" aria-hidden="true"></i> Show
@@ -391,7 +391,7 @@
                 success: function(data) {
                     $('.error-add-name').addClass('d-none');
                     $('.error-add-yearly').addClass('d-none');
-                    
+
                     if (data.errors) {
                         if (data.errors.name) {
                             setTimeout(function() {
@@ -400,14 +400,18 @@
                             }, 500);
                             $('.error-add-name').removeClass('d-none');
                             $('.error-add-name').text(data.errors.name);
-                        }
-                        if (data.errors.yearly) {
+                        } else if (data.errors.yearly) {
                             setTimeout(function() {
                                 $('#add-modal').modal('show');
                                 toastr.error(data.errors.yearly, 'Error Alert', {timeOut: 5000});
                             }, 500);
                             $('.error-add-yearly').removeClass('d-none');
                             $('.error-add-yearly').text(data.errors.yearly);
+                        } else {
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                         }
                     } else {
                         toastr.success('Successfully added Month!', 'Success Alert', {timeOut: 5000});
@@ -458,7 +462,7 @@
                 success: function(data) {
                     $('.error-edit-name').addClass('d-none');
                     $('.error-edit-yearly').addClass('d-none');
-                    
+
                     if (data.errors) {
                         if (data.errors.name) {
                             setTimeout(function() {
@@ -467,14 +471,18 @@
                             }, 500);
                             $('.error-edit-name').removeClass('d-none');
                             $('.error-edit-name').text(data.errors.name);
-                        }
-                        if (data.errors.yearly) {
+                        } else if (data.errors.yearly) {
                             setTimeout(function() {
                                 $('#edit-modal').modal('show');
                                 toastr.error(data.errors.yearly, 'Error Alert', {timeOut: 5000});
                             }, 500);
                             $('.error-edit-yearly').removeClass('d-none');
                             $('.error-edit-yearly').text(data.errors.yearly);
+                        } else {
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors.yearly, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                         }
                     } else {
                         toastr.success('Successfully updated Month!', 'Success Alert', {timeOut: 5000});

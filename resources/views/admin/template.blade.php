@@ -7,8 +7,8 @@
 	@include('admin.partials.attributs.nav')
 
 	@include('admin.partials.attributs.sidebar')
-	
-	@include('admin.partials.attributs.message')
+
+	{{--@include('admin.partials.attributs.message')--}}
 
 	<div class="page">
 		@yield('pageheader')
@@ -16,7 +16,7 @@
 			@yield('content')
 		</div>
 	</div>
-	
+
 	@include('admin.partials.body.footer')
 
 	@include('admin.partials.components.js')

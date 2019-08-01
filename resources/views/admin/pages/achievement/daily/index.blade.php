@@ -3,7 +3,7 @@
 @section('title', 'Daily')
 
 @section('stylesheets')
-    
+
 @endsection
 
 @section('pageheader')
@@ -520,22 +520,25 @@
                             }, 500);
                             $('.error-add-name').removeClass('d-none');
                             $('.error-add-name').text(data.errors.name);
-                        }
-                        if (data.errors.yearly) {
+                        } else if (data.errors.yearly) {
                             setTimeout(function() {
                                 $('#add-modal').modal('show');
                                 toastr.error(data.errors.yearly, 'Error Alert', {timeOut: 5000});
                             }, 500);
                             $('.error-add-yearly').removeClass('d-none');
                             $('.error-add-yearly').text(data.errors.yearly);
-                        }
-                        if (data.errors.monthly) {
+                        } else if (data.errors.monthly) {
                             setTimeout(function() {
                                 $('#add-modal').modal('show');
                                 toastr.error(data.errors.monthly, 'Error Alert', {timeOut: 5000});
                             }, 500);
                             $('.error-add-monthly').removeClass('d-none');
                             $('.error-add-monthly').text(data.errors.monthly);
+                        } else {
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                         }
                     } else {
                         toastr.success('Successfully added Date!', 'Success Alert', {timeOut: 5000});
@@ -599,22 +602,25 @@
                             }, 500);
                             $('.error-edit-name').removeClass('d-none');
                             $('.error-edit-name').text(data.errors.name);
-                        }
-                        if (data.errors.yearly) {
+                        } else if (data.errors.yearly) {
                             setTimeout(function() {
                                 $('#edit-modal').modal('show');
                                 toastr.error(data.errors.yearly, 'Error Alert', {timeOut: 5000});
                             }, 500);
                             $('.error-edit-yearly').removeClass('d-none');
                             $('.error-edit-yearly').text(data.errors.yearly);
-                        }
-                        if (data.errors.montly) {
+                        } else if (data.errors.montly) {
                             setTimeout(function() {
                                 $('#edit-modal').modal('show');
                                 toastr.error(data.errors.monthly, 'Error Alert', {timeOut: 5000});
                             }, 500);
                             $('.error-edit-montly').removeClass('d-none');
                             $('.error-edit-montly').text(data.errors.montly);
+                        } else {
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                         }
                     } else {
                         toastr.success('Successfully updated Date!', 'Success Alert', {timeOut: 5000});

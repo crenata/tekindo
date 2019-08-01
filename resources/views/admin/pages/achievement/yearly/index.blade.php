@@ -254,7 +254,7 @@
                                             <td>{{ $yearly->name }}</td>
                                             <td>{{ date('D, j F Y', strtotime($yearly->start)) }}</td>
                                             <td>{{ date('D, j F Y', strtotime($yearly->end)) }}</td>
-                                            <td>{{ number_format($yearly->target) }} Ton</td>
+                                            <td>{{ number_format($yearly->target, 2) }} Ton</td>
                                             <td class="actions">
                                                 <a href="javascript:void(0)" data-id="{{ $yearly->id }}" data-name="{{ $yearly->name }}" data-start="{{ $yearly->start }}" data-end="{{ $yearly->end }}" data-target="{{ $yearly->target }}" class="btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-yearly" data-toggle="tooltip" data-original-title="Show">
                                                     <i class="icon md-wrench" aria-hidden="true"></i> Show
@@ -416,22 +416,25 @@
                                 }, 500);
                                 $('.error-add-start').removeClass('d-none');
                                 $('.error-add-start').text(data.errors.start);
-                            }
-                            if (data.errors.end) {
+                            } else if (data.errors.end) {
                                 setTimeout(function() {
                                     $('#add-modal').modal('show');
                                     toastr.error(data.errors.end, 'Error Alert', {timeOut: 5000});
                                 }, 500);
                                 $('.error-add-end').removeClass('d-none');
                                 $('.error-add-end').text(data.errors.end);
-                            }
-                            if (data.errors.target) {
+                            } else if (data.errors.target) {
                                 setTimeout(function() {
                                     $('#add-modal').modal('show');
                                     toastr.error(data.errors.target, 'Error Alert', {timeOut: 5000});
                                 }, 500);
                                 $('.error-add-target').removeClass('d-none');
                                 $('.error-add-target').text(data.errors.target);
+                            } else {
+                                setTimeout(function() {
+                                    $('#add-modal').modal('show');
+                                    toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
+                                }, 500);
                             }
                         } else {
                             toastr.success('Successfully added Year!', 'Success Alert', {timeOut: 5000});
@@ -499,22 +502,25 @@
                                 }, 500);
                                 $('.error-edit-start').removeClass('d-none');
                                 $('.error-edit-start').text(data.errors.start);
-                            }
-                            if (data.errors.end) {
+                            } else if (data.errors.end) {
                                 setTimeout(function() {
                                     $('#edit-modal').modal('show');
                                     toastr.error(data.errors.end, 'Error Alert', {timeOut: 5000});
                                 }, 500);
                                 $('.error-edit-end').removeClass('d-none');
                                 $('.error-edit-end').text(data.errors.end);
-                            }
-                            if (data.errors.target) {
+                            } else if (data.errors.target) {
                                 setTimeout(function() {
                                     $('#edit-modal').modal('show');
                                     toastr.error(data.errors.target, 'Error Alert', {timeOut: 5000});
                                 }, 500);
                                 $('.error-edit-target').removeClass('d-none');
                                 $('.error-edit-target').text(data.errors.target);
+                            } else {
+                                setTimeout(function() {
+                                    $('#edit-modal').modal('show');
+                                    toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
+                                }, 500);
                             }
                         } else {
                             toastr.success('Successfully updated Year!', 'Success Alert', {timeOut: 5000});

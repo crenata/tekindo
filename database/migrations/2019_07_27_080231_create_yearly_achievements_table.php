@@ -19,7 +19,7 @@ class CreateYearlyAchievementsTable extends Migration
             $table->string('slug');
             $table->date('start');
             $table->date('end');
-            $table->bigInteger('target')->default(0);
+            $table->double('target', null, 2)->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

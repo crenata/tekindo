@@ -3,7 +3,7 @@
 @section('title', 'Monthly')
 
 @section('stylesheets')
-    
+
 @endsection
 
 @section('pageheader')
@@ -255,10 +255,10 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-12 mt-30">
                                 <div id="monthly-generate">
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -465,7 +465,7 @@
                 success: function(data) {
                     $('.error-add-name').addClass('d-none');
                     $('.error-add-yearly').addClass('d-none');
-                    
+
                     if (data.errors) {
                         if (data.errors.name) {
                             setTimeout(function() {
@@ -474,14 +474,18 @@
                             }, 500);
                             $('.error-add-name').removeClass('d-none');
                             $('.error-add-name').text(data.errors.name);
-                        }
-                        if (data.errors.yearly) {
+                        } else if (data.errors.yearly) {
                             setTimeout(function() {
                                 $('#add-modal').modal('show');
                                 toastr.error(data.errors.yearly, 'Error Alert', {timeOut: 5000});
                             }, 500);
                             $('.error-add-yearly').removeClass('d-none');
                             $('.error-add-yearly').text(data.errors.yearly);
+                        } else {
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                         }
                     } else {
                         toastr.success('Successfully added Month!', 'Success Alert', {timeOut: 5000});
@@ -532,7 +536,7 @@
                 success: function(data) {
                     $('.error-edit-name').addClass('d-none');
                     $('.error-edit-yearly').addClass('d-none');
-                    
+
                     if (data.errors) {
                         if (data.errors.name) {
                             setTimeout(function() {
@@ -541,14 +545,18 @@
                             }, 500);
                             $('.error-edit-name').removeClass('d-none');
                             $('.error-edit-name').text(data.errors.name);
-                        }
-                        if (data.errors.yearly) {
+                        } else if (data.errors.yearly) {
                             setTimeout(function() {
                                 $('#edit-modal').modal('show');
                                 toastr.error(data.errors.yearly, 'Error Alert', {timeOut: 5000});
                             }, 500);
                             $('.error-edit-yearly').removeClass('d-none');
                             $('.error-edit-yearly').text(data.errors.yearly);
+                        } else {
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                         }
                     } else {
                         toastr.success('Successfully updated Month!', 'Success Alert', {timeOut: 5000});
@@ -607,7 +615,7 @@
                 contentType: false,
                 success: function(data) {
                     if (data.errors) {
-                        
+
                     } else {
                         $('#monthly-generate').replaceWith(
                             "<div id='monthly-generate'>" +
@@ -641,7 +649,7 @@
                                     contentType: false,
                                     success: function(data) {
                                         if (data.errors) {
-                                            
+
                                         } else {
                                             console.log(data);
                                             $('.generate-result').val(data);
@@ -661,7 +669,7 @@
                                                     contentType: false,
                                                     success: function(data) {
                                                         if (data.errors) {
-                                                            
+
                                                         } else {
                                                             console.log(data);
                                                             toastr.success('Successfully Generate Target!', 'Success Alert', {timeOut: 5000});
@@ -670,7 +678,7 @@
                                                                 $('#monthly-id-' + value.id).replaceWith(
                                                                     "<tr id='monthly-id-" + value.id + "'>" +
                                                                         "<td>" + convert_month(value.name) + "</td>" +
-                                                                        "<td>" + value.yearly_achievement.name + "</td>" +
+                                                                        "<td>" + value.year_name + "</td>" +
                                                                         "<td>" + ((value.target) ? format_money(parseFloat(value.target)) : '0') + " Ton" + "</td>" +
                                                                         /*"<td class='actions'>" +
                                                                             "<a href='javascript:void(0)' data-id='" + value.id + "' data-name='" + value.name + "' data-yearly='" + value.yearly_achievement.name + "' data-target='" + value.target + "' class='btn btn-sm btn-icon btn-pure btn-default on-editing save-row show-monthly' data-toggle='tooltip' data-original-title='Show'>" +

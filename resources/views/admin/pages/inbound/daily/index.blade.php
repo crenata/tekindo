@@ -3,7 +3,7 @@
 @section('title', 'Daily')
 
 @section('stylesheets')
-    
+
 @endsection
 
 @section('pageheader')
@@ -300,8 +300,8 @@
                                 @foreach($dailys as $daily)
                                     <tr id="daily-id-{{ $daily->id }}">
                                         <td>{{ date('D, j F Y', strtotime($daily->daily_achievement->name)) }}</td>
-                                        <td>{{ $daily->daily_achievement->target }}</td>
-                                        <td>{{ number_format($daily->total) }} Ton</td>
+                                        <td>{{ number_format($daily->daily_achievement->target, 2) }} Ton</td>
+                                        <td>{{ number_format($daily->total, 2) }} Ton</td>
                                         <td>{{ $daily->status }} </td>
                                         <td>{{ substr(strip_tags($daily->note), 0, 100) }}{{ strlen(strip_tags($daily->note)) > 100 ? "..." : "" }}</td>
                                         <td class="actions">
@@ -575,8 +575,7 @@
                             }, 500);
                             $('.error-add-daily_achievement_id').removeClass('d-none');
                             $('.error-add-daily_achievement_id').text(data.errors.daily_achievement_id);
-                        }
-                        if (data.errors.total) {
+                        } else if (data.errors.total) {
                             setTimeout(function() {
                                 $('#add-modal').modal('show');
                                 toastr.error(data.errors.total, 'Error Alert', {timeOut: 5000});
@@ -584,8 +583,7 @@
                             toastr.error('Total Error!', 'Error Alert', {timeOut: 5000});
                             $('.error-add-total').removeClass('d-none');
                             $('.error-add-total').text(data.errors.total);
-                        }
-                        if (data.errors.status) {
+                        } else if (data.errors.status) {
                             setTimeout(function() {
                                 $('#add-modal').modal('show');
                                 toastr.error(data.errors.status, 'Error Alert', {timeOut: 5000});
@@ -593,8 +591,7 @@
                             toastr.error('Status Error!', 'Error Alert', {timeOut: 5000});
                             $('.error-add-status').removeClass('d-none');
                             $('.error-add-status').text(data.errors.status);
-                        }
-                        if (data.errors.note) {
+                        } else if (data.errors.note) {
                             setTimeout(function() {
                                 $('#add-modal').modal('show');
                                 toastr.error(data.errors.note, 'Error Alert', {timeOut: 5000});
@@ -602,13 +599,18 @@
                             toastr.error('Note Error!', 'Error Alert', {timeOut: 5000});
                             $('.error-add-note').removeClass('d-none');
                             $('.error-add-note').text(data.errors.note);
+                        } else {
+                            setTimeout(function() {
+                                $('#add-modal').modal('show');
+                                toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                         }
                     } else {
                         toastr.success('Successfully added Date!', 'Success Alert', {timeOut: 5000});
                         $('#datatable').append(
                             "<tr id='daily-id-" + data.id + "'>" +
                                 "<td>" + get_date(data.daily_achievement.name) + "</td>" +
-                                "<td>" + data.daily_achievement.target + "</td>" +
+                                "<td>" + format_money(parseFloat(data.daily_achievement.target)) + " Ton" + "</td>" +
                                 "<td>" + format_money(parseFloat(data.total)) + " Ton" + "</td>" +
                                 "<td>" + data.status + "</td>" +
                                 "<td>" + data.note + "</td>" +
@@ -626,8 +628,8 @@
                             "</tr>");
                     }
                 },
-                error: function(data) {
-                    toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
+                error: function(xhr, status, error) {
+                    toastr.error('Pastikan Anda tidak memasukkan data yang sama!', 'Error Alert', {timeOut: 5000});
                 }
             });
         }
@@ -677,37 +679,39 @@
                             }, 500);
                             $('.error-edit-daily_achievement_id').removeClass('d-none');
                             $('.error-edit-daily_achievement_id').text(data.errors.name);
-                        }
-                        if (data.errors.total) {
+                        } else if (data.errors.total) {
                             setTimeout(function() {
                                 $('#edit-modal').modal('show');
                                 toastr.error(data.errors.total, 'Error Alert', {timeOut: 5000});
                             }, 500);
                             $('.error-edit-total').removeClass('d-none');
                             $('.error-edit-total').text(data.errors.total);
-                        }
-                        if (data.errors.status) {
+                        } else if (data.errors.status) {
                             setTimeout(function() {
                                 $('#edit-modal').modal('show');
                                 toastr.error(data.errors.status, 'Error Alert', {timeOut: 5000});
                             }, 500);
                             $('.error-edit-status').removeClass('d-none');
                             $('.error-edit-status').text(data.errors.status);
-                        }
-                        if (data.errors.note) {
+                        } else if (data.errors.note) {
                             setTimeout(function() {
                                 $('#edit-modal').modal('show');
                                 toastr.error(data.errors.note, 'Error Alert', {timeOut: 5000});
                             }, 500);
                             $('.error-edit-note').removeClass('d-none');
                             $('.error-edit-note').text(data.errors.note);
+                        } else {
+                            setTimeout(function() {
+                                $('#edit-modal').modal('show');
+                                toastr.error(data.errors, 'Error Alert', {timeOut: 5000});
+                            }, 500);
                         }
                     } else {
                         toastr.success('Successfully updated Date!', 'Success Alert', {timeOut: 5000});
                         $('#daily-id-' + data.id).replaceWith(
                             "<tr id='daily-id-" + data.id + "'>" +
                                 "<td>" + get_date(data.daily_achievement.name) + "</td>" +
-                                "<td>" + data.daily_achievement.target + "</td>" +
+                                "<td>" + format_money(parseFloat(data.daily_achievement.target)) + " Ton" + "</td>" +
                                 "<td>" + format_money(parseFloat(data.total)) + " Ton" + "</td>" +
                                 "<td>" + data.status + "</td>" +
                                 "<td>" + data.note + "</td>" +

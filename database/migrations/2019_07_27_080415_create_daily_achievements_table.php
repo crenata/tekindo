@@ -19,7 +19,7 @@ class CreateDailyAchievementsTable extends Migration
             $table->bigInteger('monthly_achievement_id')->unsigned();
             $table->date('name');
             $table->string('slug');
-            $table->bigInteger('target')->nullable()->default(0);
+            $table->double('target', null, 2)->nullable()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

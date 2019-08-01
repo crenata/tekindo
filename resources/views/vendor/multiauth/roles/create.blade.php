@@ -1,25 +1,34 @@
-@extends('multiauth::layouts.app') 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-info text-white">Add New Role</div>
+@extends('admin.template')
 
-                <div class="card-body">
-    @include('multiauth::message')
-                    <form action="{{ route('admin.role.store') }}" method="post">
-                        @csrf
+@section('title', 'Add Role')
+
+@section('content')
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Add New Role</h3>
+                </div>
+
+                <div class="panel-body">
+                    @include('multiauth::message')
+
+                    {{ Form::open(array('route' => 'admin.role.store', 'class' => 'form-horizontal')) }}
                         <div class="form-group">
                             <label for="role">Role Name</label>
                             <input type="text" placeholder="Give an awesome name for role" name="name" class="form-control" id="role" required>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-sm">Store</button>
-                        <a href="{{ route('admin.roles') }}" class="btn btn-sm btn-danger float-right">Back</a>
-                    </form>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="{{ route('admin.roles') }}" class="btn btn-sm btn-danger">Back</a>
+                            </div>
+                            <div class="col-md-6 clearfix">
+                                <button type="submit" class="btn btn-primary btn-sm float-right">Store</button>
+                            </div>
+                        </div>
+                    {{ Form::close() }}
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection

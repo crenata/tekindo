@@ -147,7 +147,7 @@ class MonthlyAchievementController extends Controller
 
     public function generateByYearly($id) {
         $yearly = YearlyAchievement::where('id', $id)->firstOrFail();
-        $target = ceil(($yearly->target / $yearly->monthly_achievements->count()));
+        $target = round(($yearly->target / $yearly->monthly_achievements->count()), 2);
         return response()->json($target);
     }
 
@@ -155,13 +155,13 @@ class MonthlyAchievementController extends Controller
         $monthly = MonthlyAchievement::where('id', $id)->firstOrFail();
 
         if ($monthly->target != null || $monthly->target != 0) {
-            $target = ceil(($monthly->target / $monthly->daily_achievements->count()));
+            $target = round(($monthly->target / $monthly->daily_achievements->count()), 2);
             return response()->json($target);
         } else {
             $yearly = YearlyAchievement::where('id', $monthly->yearly_achievement_id)->firstOrFail();
-            $monthly_target = ceil(($yearly->target / $yearly->monthly_achievements->count()));
+            $monthly_target = round(($yearly->target / $yearly->monthly_achievements->count()), 2);
             MonthlyAchievement::where('yearly_achievement_id', $yearly->id)->update(['target' => $monthly_target]);
-            $target = ceil(($monthly_target / $monthly->daily_achievements->count()));
+            $target = round(($monthly_target / $monthly->daily_achievements->count()), 2);
             return response()->json($target);
         }
     }

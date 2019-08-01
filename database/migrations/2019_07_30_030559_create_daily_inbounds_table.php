@@ -17,8 +17,8 @@ class CreateDailyInboundsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('yearly_achievement_id')->unsigned();
             $table->bigInteger('monthly_achievement_id')->unsigned();
-            $table->bigInteger('daily_achievement_id')->unsigned();
-            $table->bigInteger('total')->default(0);
+            $table->bigInteger('daily_achievement_id')->unsigned()->unique();
+            $table->double('total', null, 2)->default(0);
             $table->enum('status', ['Tercapai', 'Belum Tercapai'])->default('Belum Tercapai');
             $table->longText('note')->nullable();
             $table->timestamps();

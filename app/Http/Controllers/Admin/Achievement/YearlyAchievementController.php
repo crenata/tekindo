@@ -110,9 +110,9 @@ class YearlyAchievementController extends Controller
                             'updated_at' => $now
                         ]);
 
-                        $days = cal_days_in_month(CAL_GREGORIAN, date('m', strtotime($this->request->end)), date('Y', strtotime($this->request->end)));
+                        $days2 = cal_days_in_month(CAL_GREGORIAN, date('m', strtotime($this->request->end)), date('Y', strtotime($this->request->end)));
 
-                        for ($l = 1; $l <= $days; $l++) {
+                        for ($l = 1; $l <= $days2; $l++) {
                             DB::table('daily_achievements')->insert([
                                 'yearly_achievement_id' => $yearly_id,
                                 'monthly_achievement_id' => $monthly_id_end,

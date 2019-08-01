@@ -19,7 +19,7 @@ class CreateMonthlyInboundsTable extends Migration
             $table->bigInteger('monthly_achievement_id')->unsigned();
             $table->bigInteger('daily_inbound_id')->unsigned();
             $table->string('name');
-            $table->bigInteger('total')->nullable();
+            $table->double('total', null, 2)->nullable();
             $table->enum('status', ['Tercapai', 'Belum Tercapai'])->default('Belum Tercapai');
             $table->timestamps();
             $table->softDeletes();

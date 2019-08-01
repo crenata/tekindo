@@ -18,7 +18,7 @@ class CreateYearlyInboundsTable extends Migration
             $table->bigInteger('yearly_achievement_id')->unsigned();
             $table->bigInteger('monthly_inbound_id')->unsigned();
             $table->string('name');
-            $table->bigInteger('total');
+            $table->double('total', null, 2);
             $table->enum('status', ['Tercapai', 'Belum Tercapai']);
             $table->timestamps();
             $table->softDeletes();

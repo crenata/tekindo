@@ -19,7 +19,7 @@ class CreateMonthlyAchievementsTable extends Migration
             $table->bigInteger('year_name');
             $table->enum('name', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
             $table->string('slug');
-            $table->bigInteger('target')->nullable()->default(0);
+            $table->double('target', null, 2)->nullable()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

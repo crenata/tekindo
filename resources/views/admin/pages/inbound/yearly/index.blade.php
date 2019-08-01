@@ -46,7 +46,7 @@
                                             <td>{{ $yearly->name }}</td>
                                             <td>{{ date('D, j F Y', strtotime($yearly->yearly_achievement->start)) }}</td>
                                             <td>{{ date('D, j F Y', strtotime($yearly->yearly_achievement->end)) }}</td>
-                                            <td>{{ number_format($yearly->yearly_achievement->target) }} Ton</td>
+                                            <td>{{ number_format($yearly->yearly_achievement->target, 2) }} Ton</td>
                                             <td>{{ $yearly->total }} Ton</td>
                                             <td>{{ $yearly->status }}</td>
                                         </tr>
